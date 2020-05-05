@@ -1,7 +1,10 @@
+
 const cardsContainer = document.querySelector('.places-list');
-const formAddPlace = document.querySelector('.popup');
+const formAddPlace = document.querySelector('#new-popup');
+const formEditProfile = document.querySelector('#edit-popup');
 const addButton = document.querySelector('.user-info__button');
-const popupClose = document.querySelector('.popup__close');
+const editButton = document.querySelector('.user-info__edit');
+const popupClose = document.querySelectorAll('.popup__close');
 const form = document.forms.new;
 const template = document.querySelector('#card-template').content.querySelector('.place-card');
 
@@ -42,17 +45,27 @@ function contentManagement(event) {
 cardsContainer.addEventListener('click', contentManagement)
 
 
-function openedPopup() {
-  formAddPlace.classList.add('popup_is-opened');
+function openedPopup(event) {
+  const clickElem = event.currentTarget;
+
+  if (clickElem === addButton) {
+    formAddPlace.classList.add('popup_is-opened');
+  } else if (clickElem === editButton) {
+    formEditProfile.classList.add('popup_is-opened');
+  }
+  
 }
 
 addButton.addEventListener('click', openedPopup);
+editButton.addEventListener('click', openedPopup);
 
-function clsedPopup() {
-  formAddPlace.classList.remove('popup_is-opened');
+function closedPopup(event) {
+  const popup = event.target.closest('.popup');
+  
+  popup.classList.remove('popup_is-opened');
 }
 
-popupClose.addEventListener('click', clsedPopup);
+popupClose.forEach(closeButton => {closeButton.addEventListener('click', closedPopup)});
 
 function formAddCard(event) {
   event.preventDefault();
