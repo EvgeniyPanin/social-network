@@ -5,31 +5,30 @@ const popupClose = document.querySelector('.popup__close');
 const form = document.forms.new;
 const template = document.querySelector('#card-template').content.querySelector('.place-card');
 
-function createCard(cardName, imageLink) {
-  // Можно лучше
-  // Воспользуйтесь `<template>` -- https://developer.mozilla.org/ru/docs/Web/HTML/Element/template
-  // И `cloneNode` -- https://developer.mozilla.org/ru/docs/Web/API/Node/cloneNode
-  // Для удобного тиражирования одинаковых объектов
+function createCard() {
   const newCard = template.cloneNode(true);
+  return newCard;
+}
+
+function addDataCard(newCard, cardName, imageLink) {
   newCard.querySelector('.place-card__image').style = `background-image: url(${imageLink})`;
   newCard.querySelector('.place-card__name').textContent = cardName;
   return newCard;
 }
 
 function addCard(name, link) {
-  const cardItem = createCard(name, link);
-  cardsContainer.appendChild(cardItem);
+  const cardItem = createCard();
+  const doneCard = addDataCard(cardItem, name, link);
+  cardsContainer.appendChild(doneCard);
 }
 
 function formAddCard(event) {
   event.preventDefault();
   const form = document.forms.new;
-  // Можно лучше через деструктуризацию
-  // const {name, link} = form.elements;
-  const formName = form.elements.name;
-  const formLink = form.elements.link;
-
+  const {name : formName, link : formLink} = form.elements;
+  
   addCard(formName.value, formLink.value);
+  
   form.reset();
   formAddPlace.classList.remove('popup_is-opened');
 }
