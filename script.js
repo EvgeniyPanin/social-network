@@ -1,11 +1,14 @@
 
 const cardsContainer = document.querySelector('.places-list');
-const formAddPlace = document.querySelector('#new-popup');
-const formEditProfile = document.querySelector('#edit-popup');
+const popupAddPlace = document.querySelector('#new-popup');
+const popupEditProfile = document.querySelector('#edit-popup');
 const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
 const popupClose = document.querySelectorAll('.popup__close');
-const form = document.forms.new;
+const userName = document.querySelector('.user-info__name');
+const userJob = document.querySelector('.user-info__job');
+const formAddPlace = document.forms.new;
+const formEditProfile = document.forms.edit;
 const template = document.querySelector('#card-template').content.querySelector('.place-card');
 
 function createCard() {
@@ -49,9 +52,14 @@ function openedPopup(event) {
   const clickElem = event.currentTarget;
 
   if (clickElem === addButton) {
-    formAddPlace.classList.add('popup_is-opened');
+    popupAddPlace.classList.add('popup_is-opened');
   } else if (clickElem === editButton) {
-    formEditProfile.classList.add('popup_is-opened');
+    popupEditProfile.classList.add('popup_is-opened');
+
+    const {name : Name, about : Job} = formEditProfile.elements;
+    
+    Name.value = userName.textContent;
+    Job.value = userJob.textContent;
   }
   
 }
@@ -61,7 +69,7 @@ editButton.addEventListener('click', openedPopup);
 
 function closedPopup(event) {
   const popup = event.target.closest('.popup');
-  
+
   popup.classList.remove('popup_is-opened');
 }
 
@@ -69,14 +77,30 @@ popupClose.forEach(closeButton => {closeButton.addEventListener('click', closedP
 
 function formAddCard(event) {
   event.preventDefault();
-  const form = document.forms.new;
+  const form = event.currentTarget;
   const {name : formName, link : formLink} = form.elements;
   
   addCard(formName.value, formLink.value);
   
   form.reset();
-  formAddPlace.classList.remove('popup_is-opened');
+  popupAddPlace.classList.remove('popup_is-opened');
 }
 
-form.addEventListener('submit', formAddCard);
+formAddPlace.addEventListener('submit', formAddCard);
+
+function editUserData(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const {name : Name, about : Job} = form.elements;
+
+  userName.textContent = Name.value;
+  userJob.textContent = Job.value;
+
+  popupEditProfile.classList.remove('popup_is-opened');
+}
+
+formEditProfile.addEventListener('submit', editUserData);
+
+
 
