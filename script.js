@@ -33,16 +33,14 @@ function formAddCard(event) {
   formAddPlace.classList.remove('popup_is-opened');
 }
 
-// Можно лучше
-// Вынести загрузку исходных карточек в отдельный метод
-// Это будет хорошая организация кода
-initialCards.forEach(function (item) {
+function renderCard(item) {
   addCard(item.name, item.link);
-})
+}
 
-// Можно лучше
-// Код обработчика вынести в отдельный метод
-cardsContainer.addEventListener('click', function (event) {
+initialCards.forEach(renderCard);
+
+
+function contentManagement(event) {
   if (event.target.classList.contains('place-card__like-icon')) {
     event.target.classList.toggle('place-card__like-icon_liked');
   }
@@ -50,7 +48,9 @@ cardsContainer.addEventListener('click', function (event) {
     let card = event.target.closest('.place-card');
     cardsContainer.removeChild(card);
   }
-})
+}
+
+cardsContainer.addEventListener('click', contentManagement)
 
 // Можно лучше
 // Код обработчика вынести в отдельный метод
