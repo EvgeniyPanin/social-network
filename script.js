@@ -22,17 +22,6 @@ function addCard(name, link) {
   cardsContainer.appendChild(doneCard);
 }
 
-function formAddCard(event) {
-  event.preventDefault();
-  const form = document.forms.new;
-  const {name : formName, link : formLink} = form.elements;
-  
-  addCard(formName.value, formLink.value);
-  
-  form.reset();
-  formAddPlace.classList.remove('popup_is-opened');
-}
-
 function renderCard(item) {
   addCard(item.name, item.link);
 }
@@ -52,30 +41,29 @@ function contentManagement(event) {
 
 cardsContainer.addEventListener('click', contentManagement)
 
-// Можно лучше
-// Код обработчика вынести в отдельный метод
-addButton.addEventListener('click', function () {
-  formAddPlace.classList.add('popup_is-opened');
-});
 
-// Можно лучше
-// Код обработчика вынести в отдельный метод
-popupClose.addEventListener('click', function () {
+function openedPopup() {
+  formAddPlace.classList.add('popup_is-opened');
+}
+
+addButton.addEventListener('click', openedPopup);
+
+function clsedPopup() {
   formAddPlace.classList.remove('popup_is-opened');
-});
+}
+
+popupClose.addEventListener('click', clsedPopup);
+
+function formAddCard(event) {
+  event.preventDefault();
+  const form = document.forms.new;
+  const {name : formName, link : formLink} = form.elements;
+  
+  addCard(formName.value, formLink.value);
+  
+  form.reset();
+  formAddPlace.classList.remove('popup_is-opened');
+}
 
 form.addEventListener('submit', formAddCard);
 
-// Добрый день!
-
-// ## Итог
-
-// - код работает, нет синтаксических и других ошибок
-// - функционал, перечисленный в задании, работает (при перезагрузке на страницу добавляются 10 карточек,
-//   форма открывается и закрывается, можно добавить, удалить и лайкнуть карточку)
-// - функционал работает без ошибок
-// - карточку можно добавить нажав Enter, находясь в одном из текстовых полей
-// - верное использование `let` и `const`
-// - функции, декларированные как `function functionName() {}` не вызываются до того, как были объявлены
-
-// Работа принята
