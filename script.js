@@ -2,6 +2,7 @@
 const cardsContainer = document.querySelector('.places-list');
 const popupAddPlace = document.querySelector('#new-popup');
 const popupEditProfile = document.querySelector('#edit-popup');
+const popupImage = document.querySelector('#image-popup');
 const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
 const popupClose = document.querySelectorAll('.popup__close');
@@ -34,14 +35,38 @@ function renderCard(item) {
 
 initialCards.forEach(renderCard);
 
+function getSrc(style) {
+  src = style.split('"').filter(item => item.includes('http')).reduce((prevVal, item) => prevVal + item, '');
+  return src;
+}
+
+function openImagePopup(card) {
+  const imageItem = card.querySelector('.place-card__image');
+  const styleImage = imageItem.getAttribute('style');
+  const image = popupImage.querySelector('.popup__image');
+
+  src = getSrc(styleImage);
+  
+  image.setAttribute('src', src);
+  popupImage.classList.add('popup_is-opened');
+}
+
 
 function contentManagement(event) {
-  if (event.target.classList.contains('place-card__like-icon')) {
-    event.target.classList.toggle('place-card__like-icon_liked');
+  const clickedElem = event.target;
+  const card = clickedElem.closest('.place-card');
+
+  if (clickedElem.classList.contains('place-card__like-icon')) {
+    clickedElem.classList.toggle('place-card__like-icon_liked');
   }
-  if (event.target.classList.contains('place-card__delete-icon')) {
-    let card = event.target.closest('.place-card');
+
+  if (clickedElem.classList.contains('place-card__delete-icon')) {
     cardsContainer.removeChild(card);
+  }
+
+  if (clickedElem.classList.contains('place-card__image')) {
+
+    openImagePopup(card);
   }
 }
 
@@ -53,7 +78,13 @@ function openedPopup(event) {
 
   if (clickElem === addButton) {
     popupAddPlace.classList.add('popup_is-opened');
-  } else if (clickElem === editButton) {
+  }
+
+  if (clickElem === addButton) {
+    popupAddPlace.classList.add('popup_is-opened');
+  }
+  
+  if (clickElem === editButton) {
     popupEditProfile.classList.add('popup_is-opened');
 
     const {name : Name, about : Job} = formEditProfile.elements;
