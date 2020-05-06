@@ -137,6 +137,16 @@ function editUserData(event) {
 
 formEditProfile.addEventListener('submit', editUserData);
 
+function elemDisabled(elem, toggleClass) {
+  elem.setAttribute('disabled', true);
+  elem.classList.add(toggleClass);
+}
+
+function elemEnabled(elem, toggleClass) {
+  elem.removeAttribute('disabled');
+  elem.classList.remove(toggleClass);
+}
+
 function submitButtonEnabled(event) {
   const form = event.currentTarget;
   const submitButton = form.querySelector('.popup__button');
@@ -146,18 +156,21 @@ function submitButtonEnabled(event) {
       const {name : nameMesto, link} = form.elements;
 
       if ((nameMesto.value.length === 0) || (link.value.length === 0)) {
-        submitButton.setAttribute('disabled', true);
-        submitButton.classList.add('popup__button_disabled');
+        elemDisabled(submitButton, 'popup__button_disabled');
       } else {
-        submitButton.removeAttribute('disabled');
-        submitButton.classList.remove('popup__button_disabled');
+        elemEnabled(submitButton, 'popup__button_disabled')
       }
       
       break;
 
     case formEditProfile:
       const {name : nameUser, about} = form.elements;
-      console.log(nameUser.value, about.value);
+
+      if ((nameUser.value.length === 0) || (about.value.length === 0)) {
+        elemDisabled(submitButton, 'popup__button_disabled');
+      } else {
+        elemEnabled(submitButton, 'popup__button_disabled')
+      }
 
       break;
   }
