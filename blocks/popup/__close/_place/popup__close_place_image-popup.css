@@ -1,0 +1,7 @@
+.popup__close_place_image-popup {
+    width: 41px;
+    height:41px;
+    top: -41px;
+    right: -41px;
+    transform: rotate(90deg);
+}

@@ -47,7 +47,7 @@ function openImagePopup(card) {
 
   src = getSrc(styleImage);
   
-  image.setAttribute('src', src);
+  image.setAttribute('src', src)
   popupImage.classList.add('popup_is-opened');
 }
 
