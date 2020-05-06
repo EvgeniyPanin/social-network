@@ -65,13 +65,11 @@ function contentManagement(event) {
   }
 
   if (clickedElem.classList.contains('place-card__image')) {
-
     openImagePopup(card);
   }
 }
 
 cardsContainer.addEventListener('click', contentManagement)
-
 
 function openedPopup(event) {
   const clickElem = event.currentTarget;
@@ -85,12 +83,16 @@ function openedPopup(event) {
   }
   
   if (clickElem === editButton) {
+    const submitButton = formEditProfile.querySelector('.popup__button');
+    const {name, about : Job} = formEditProfile.elements;
+
+    toggleEnabledDisabled(name, Job, submitButton, 'popup__button_disabled');
     popupEditProfile.classList.add('popup_is-opened');
 
-    const {name : Name, about : Job} = formEditProfile.elements;
-    
-    Name.value = userName.textContent;
+    name.value = userName.textContent;
     Job.value = userJob.textContent;
+
+    toggleEnabledDisabled(name, Job, submitButton, 'popup__button_disabled');
   }
   
 }
@@ -147,51 +149,34 @@ function elemEnabled(elem, toggleClass) {
   elem.classList.remove(toggleClass);
 }
 
-function submitButtonEnabled(event) {
+function toggleEnabledDisabled(input1, input2, toggleElem, toggleClass) {
+  if ((input1.value.length === 0) || (input2.value.length === 0)) {
+    elemDisabled(toggleElem, toggleClass);
+  } else {
+    elemEnabled(toggleElem, toggleClass);
+  }
+}
+
+function submitButtonToggle(event) {
   const form = event.currentTarget;
   const submitButton = form.querySelector('.popup__button');
 
   switch (form) {
     case formAddPlace:
       const {name : nameMesto, link} = form.elements;
-
-      if ((nameMesto.value.length === 0) || (link.value.length === 0)) {
-        elemDisabled(submitButton, 'popup__button_disabled');
-      } else {
-        elemEnabled(submitButton, 'popup__button_disabled')
-      }
       
+      toggleEnabledDisabled(nameMesto, link, submitButton, 'popup__button_disabled');
       break;
 
     case formEditProfile:
       const {name : nameUser, about} = form.elements;
 
-      if ((nameUser.value.length === 0) || (about.value.length === 0)) {
-        elemDisabled(submitButton, 'popup__button_disabled');
-      } else {
-        elemEnabled(submitButton, 'popup__button_disabled')
-      }
-
+      toggleEnabledDisabled(nameUser, about, submitButton, 'popup__button_disabled');
       break;
   }
-  
 }
 
-formAddPlace.addEventListener('input', submitButtonEnabled);
-formEditProfile.addEventListener('input', submitButtonEnabled);
-
-
-/* 
-form.addEventListener('input', function(event) {
-  const form = document.forms.add;
-  if ((artist.value.length === 0) || (song.value.length === 0)) {
-    addButton.setAttribute('disabled', true);
-    addButton.classList.add('input__btn_disabled');
-  } else {
-    addButton.removeAttribute('disabled');
-    addButton.classList.remove('input__btn_disabled');
-  }
-})
- */
+formAddPlace.addEventListener('input', submitButtonToggle);
+formEditProfile.addEventListener('input', submitButtonToggle);
 
 
