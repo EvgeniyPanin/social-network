@@ -42,9 +42,11 @@
       <div class="popup__content">
         <img src="./images/close.svg" alt="" class="popup__close">
         <h3 class="popup__title">Новое место</h3>
-        <form class="popup__form" name="new">
-            <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Название">
-            <input type="text" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на картинку">
+        <form class="popup__form" name="new" novalidate>
+            <input id = "mesto_name" type="text" name="name" class="popup__input popup__input_type_name" placeholder="Название" required minlength="2" maxlength="30">
+            <span id = "mesto_name-error" class="error-message error-message_place_top"></span>
+            <input id = "mesto_url" type="url" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на картинку" required>
+            <span id = "mesto_url-error" class="error-message error-message_place_down"></span>
             <button type class="button popup__button popup__button_disabled" disabled>+</button>
         </form>
       </div>
@@ -54,9 +56,11 @@
       <div class="popup__content">
         <img src="./images/close.svg" alt="" class="popup__close">
         <h3 class="popup__title">Редактировать профиль</h3>
-        <form class="popup__form" name="edit">
-            <input type="text" name="name" class="popup__input" placeholder="Имя">
-            <input type="text" name="about" class="popup__input" placeholder="О себе">
+        <form class="popup__form" name="edit" novalidate>
+            <input type="text" name="name" class="popup__input" id="username" placeholder="Имя" required minlength="2" maxlength="30">
+            <span class="error-message error-message_place_top" id="username-error"></span>
+            <input type="text" name="about" class="popup__input" id="aboutuser"placeholder="О себе" required minlength="2" maxlength="30">
+            <span class="error-message error-message_place_down" id="aboutuser-error"></span>
             <button type class="button popup__button popup__button_place_edit">Сохранить</button>
         </form>
       </div>
@@ -70,8 +74,9 @@
     </div>
 
   </div>
-  <script src='./date.js'></script>
+  <script src='./data.js'></script>
   <script src="./script.js"></script>
+  <script src='./validation.js'></script>
 </body>
 </html>
 

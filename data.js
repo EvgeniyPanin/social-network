@@ -40,4 +40,10 @@ const initialCards = [
       link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/vladivostok.jpg'
     }
   ];
+
+  errorMessage = {
+    textErrorLength : 'Должно быть от 2 до 30 символов',
+    textErrorEmptyString : 'Это обязательное поле',
+    textErrorURL : 'Здесь должна быть ссылка', 
+  }
   

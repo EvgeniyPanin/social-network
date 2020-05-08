@@ -77,16 +77,11 @@ function openedPopup(event) {
   if (clickElem === addButton) {
     popupAddPlace.classList.add('popup_is-opened');
   }
-
-  if (clickElem === addButton) {
-    popupAddPlace.classList.add('popup_is-opened');
-  }
   
   if (clickElem === editButton) {
     const submitButton = formEditProfile.querySelector('.popup__button');
     const {name, about : Job} = formEditProfile.elements;
 
-    toggleEnabledDisabled(name, Job, submitButton, 'popup__button_disabled');
     popupEditProfile.classList.add('popup_is-opened');
 
     name.value = userName.textContent;
@@ -102,6 +97,12 @@ editButton.addEventListener('click', openedPopup);
 
 function closedPopup(event) {
   const popup = event.target.closest('.popup');
+  const form = popup.querySelector('.popup__form');
+  const formErrors = form.querySelectorAll('.error-message');
+
+  form.reset();
+
+  [...formErrors].forEach(errors => errors.textContent = '');
 
   popup.classList.remove('popup_is-opened');
 }
@@ -157,9 +158,14 @@ function toggleEnabledDisabled(input1, input2, toggleElem, toggleClass) {
   }
 }
 
-function submitButtonToggle(event) {
+function setSubmitButtonState(event, valid=true) {
   const form = event.currentTarget;
   const submitButton = form.querySelector('.popup__button');
+
+  if (!valid) {
+    elemDisabled(submitButton, 'popup__button_disabled');
+    return false;
+  }
 
   switch (form) {
     case formAddPlace:
@@ -175,8 +181,3 @@ function submitButtonToggle(event) {
       break;
   }
 }
-
-formAddPlace.addEventListener('input', submitButtonToggle);
-formEditProfile.addEventListener('input', submitButtonToggle);
-
-
