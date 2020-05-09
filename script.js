@@ -1,3 +1,7 @@
+// Можно лучше
+// Используйте строгий режим -- позволит найти все невено объявленные переменные
+// https://learn.javascript.ru/strict-mode
+"use strict";
 
 const cardsContainer = document.querySelector('.places-list');
 const popupAddPlace = document.querySelector('#new-popup');
@@ -11,6 +15,11 @@ const userJob = document.querySelector('.user-info__job');
 const formAddPlace = document.forms.new;
 const formEditProfile = document.forms.edit;
 const template = document.querySelector('#card-template').content.querySelector('.place-card');
+const errorMessage = {
+  textErrorLength: 'Должно быть от 2 до 30 символов',
+  textErrorEmptyString: 'Это обязательное поле',
+  textErrorURL: 'Здесь должна быть ссылка',
+}
 
 function createCard() {
   const newCard = template.cloneNode(true);
@@ -35,20 +44,15 @@ function renderCard(item) {
 
 initialCards.forEach(renderCard);
 
-function getSrc(style) {
-  src = style.split('"').filter(item => item.includes('http')).reduce((prevVal, item) => prevVal + item, '');
-  return src;
-}
+function openImagePopup(event) {
+  const imageItem = event.target.closest('.place-card__image');
+  const src = imageItem.style.backgroundImage.replace('url(','').replace(')','').replace(/\"/gi, "");
 
-function openImagePopup(card) {
-  const imageItem = card.querySelector('.place-card__image');
-  const styleImage = imageItem.getAttribute('style');
-  const image = popupImage.querySelector('.popup__image');
+  console.log(src);
 
-  src = getSrc(styleImage);
+
+
   
-  image.setAttribute('src', src)
-  popupImage.classList.add('popup_is-opened');
 }
 
 
@@ -65,31 +69,43 @@ function contentManagement(event) {
   }
 
   if (clickedElem.classList.contains('place-card__image')) {
-    openImagePopup(card);
+    openedPopup(event);
   }
 }
 
-cardsContainer.addEventListener('click', contentManagement)
+cardsContainer.addEventListener('click', contentManagement);
+
+function showPopup(popup) {
+  popup.classList.add('popup_is-opened');
+}
 
 function openedPopup(event) {
   const clickElem = event.currentTarget;
 
   if (clickElem === addButton) {
-    popupAddPlace.classList.add('popup_is-opened');
+    showPopup(popupAddPlace);
   }
-  
+
   if (clickElem === editButton) {
     const submitButton = formEditProfile.querySelector('.popup__button');
-    const {name, about : Job} = formEditProfile.elements;
-
+    const { name, about: Job } = formEditProfile.elements;
     popupEditProfile.classList.add('popup_is-opened');
+    
+    showPopup(popupEditProfile);
 
     name.value = userName.textContent;
     Job.value = userJob.textContent;
-
-    toggleEnabledDisabled(name, Job, submitButton, 'popup__button_disabled');
   }
-  
+
+  if (event.target.classList.contains('place-card__image')) {
+    const imageItem = event.target.closest('.place-card__image');
+    const src = imageItem.style.backgroundImage.replace('url(','').replace(')','').replace(/\"/gi, "");
+    const image = popupImage.querySelector('.popup__image');
+
+    image.setAttribute('src', src);
+
+    showPopup(popupImage);
+  }
 }
 
 addButton.addEventListener('click', openedPopup);
@@ -97,6 +113,12 @@ editButton.addEventListener('click', openedPopup);
 
 function closedPopup(event) {
   const popup = event.target.closest('.popup');
+
+  if (popup.id === 'image-popup') {
+    popup.classList.remove('popup_is-opened');
+    return;
+  }
+
   const form = popup.querySelector('.popup__form');
   const formErrors = form.querySelectorAll('.error-message');
 
@@ -107,21 +129,16 @@ function closedPopup(event) {
   popup.classList.remove('popup_is-opened');
 }
 
-popupClose.forEach(closeButton => {closeButton.addEventListener('click', closedPopup)});
+popupClose.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
 
 function formAddCard(event) {
   event.preventDefault();
   const form = event.currentTarget;
-  const {name : formName, link : formLink} = form.elements;
+  const { name: formName, link: formLink } = form.elements;
   const buttonForm = form.querySelector('.popup__button');
-  
-  addCard(formName.value, formLink.value);
-  
-  form.reset();
-  buttonForm.setAttribute('disabled', true);
-  buttonForm.classList.add('popup__button_disabled');
 
-  popupAddPlace.classList.remove('popup_is-opened');
+  addCard(formName.value, formLink.value);
+  closedPopup(event);
 }
 
 formAddPlace.addEventListener('submit', formAddCard);
@@ -130,54 +147,85 @@ function editUserData(event) {
   event.preventDefault();
 
   const form = event.currentTarget;
-  const {name : Name, about : Job} = form.elements;
+  const { name: Name, about: Job } = form.elements;
 
   userName.textContent = Name.value;
   userJob.textContent = Job.value;
 
-  popupEditProfile.classList.remove('popup_is-opened');
+  closedPopup(event);
 }
 
 formEditProfile.addEventListener('submit', editUserData);
 
-function elemDisabled(elem, toggleClass) {
-  elem.setAttribute('disabled', true);
-  elem.classList.add(toggleClass);
-}
 
-function elemEnabled(elem, toggleClass) {
-  elem.removeAttribute('disabled');
-  elem.classList.remove(toggleClass);
-}
+function isValidity(field) {
+  field.setCustomValidity("");
 
-function toggleEnabledDisabled(input1, input2, toggleElem, toggleClass) {
-  if ((input1.value.length === 0) || (input2.value.length === 0)) {
-    elemDisabled(toggleElem, toggleClass);
-  } else {
-    elemEnabled(toggleElem, toggleClass);
-  }
-}
+  if (field.validity.valueMissing) {
+    field.setCustomValidity(errorMessage.textErrorEmptyString);
+    return false
+  }  
 
-function setSubmitButtonState(event, valid=true) {
-  const form = event.currentTarget;
-  const submitButton = form.querySelector('.popup__button');
-
-  if (!valid) {
-    elemDisabled(submitButton, 'popup__button_disabled');
-    return false;
+  if (field.validity.tooShort || field.validity.tooLong) {
+    field.setCustomValidity(errorMessage.textErrorLength);
+    return false
   }
 
-  switch (form) {
-    case formAddPlace:
-      const {name : nameMesto, link} = form.elements;
-      
-      toggleEnabledDisabled(nameMesto, link, submitButton, 'popup__button_disabled');
-      break;
+  if (field.validity.typeMismatch && field.type === 'url') {
+    field.setCustomValidity(errorMessage.textErrorURL);
+    return false
+  } 
 
-    case formEditProfile:
-      const {name : nameUser, about} = form.elements;
-
-      toggleEnabledDisabled(nameUser, about, submitButton, 'popup__button_disabled');
-      break;
-  }
+  return field.checkValidity();
 }
+
+function isFieldValidity(field) {
+  
+  const errorElem = field.parentNode.querySelector(`#${field.id}-error`);
+  const valid = isValidity(field)
+  if (field === event.target) {
+    errorElem.textContent = field.validationMessage;
+  }
+  
+ 
+  return valid;
+}
+
+function checkFormValidity(event) {
+  
+  const currentForm = event.currentTarget;
+  const inputs = Array.from(currentForm.elements);
+  let valid = true;
+  
+  inputs.forEach(field => {
+    if (field.type !== 'submit') {
+      if (!isFieldValidity(field)) {valid = false};
+    }
+  })
+}
+
+function setEventListeners(popup) {
+  const form = popup.querySelector('.popup__form')
+
+  form.addEventListener('input', checkFormValidity);
+}
+
+setEventListeners(popupEditProfile);
+setEventListeners(popupAddPlace);
+
+
+// Здравствуйте.
+
+// Работа отклонена от проверки -- окно попапа с увеличенным изображением не закрывается, а значит не работает обязательный функционал
+// Также обращу ваше внимание, что метод поиска URL картинки у вас неоптимальный и ненужный
+// При создании карточки добавьте атрибут с url элементу карточки, а когда будет необходимо
+// -- прочитаете его. Как это сделать https://developer.mozilla.org/ru/docs/Web/HTML/Global_attributes/data-*
+// Так как реализовано у вас -- принято не будет.
+
+// За исключением исходного массива код следует объединить в один файл.
+//  if ((input1.value.length === 0) || (input2.value.length === 0)) -- не валидация, а имена с числительными -- нельзя
+
+
+// Вы явно читали этот материал: https://developer.mozilla.org/ru/docs/Learn/HTML/Forms/%D0%92%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D1%8F_%D1%84%D0%BE%D1%80%D0%BC%D1%8B
+
+// У вас очень сложно все и много лишних условий, постарайтесь проще подойти и не усложнять
