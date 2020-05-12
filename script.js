@@ -1,6 +1,3 @@
-// Можно лучше
-// Используйте строгий режим -- позволит найти все невено объявленные переменные +
-// https://learn.javascript.ru/strict-mode
 "use strict";
 
 const cardsContainer = document.querySelector('.places-list');
@@ -13,10 +10,10 @@ const popupCloseButtons = document.querySelectorAll('.popup__close');
 const userName = document.querySelector('.user-info__name');
 const userJob = document.querySelector('.user-info__job');
 const formAddPlace = document.forms.new;
-const inputsAddCard = formAddPlace.querySelectorAll('input');
+const inputsAddCard = Array.from(formAddPlace.querySelectorAll('input'));
 const buttonSubmitAddForm = formAddPlace.querySelector('button');
 const formEditProfile = document.forms.edit;
-const inputsEditCard = formEditProfile.querySelectorAll('input');
+const inputsEditCard = Array.from(formEditProfile.querySelectorAll('input'));
 const buttonSubmitEditForm = formEditProfile.querySelector('button');
 const template = document.querySelector('#card-template').content.querySelector('.place-card');
 const errorMessage = {
@@ -24,7 +21,10 @@ const errorMessage = {
   textErrorEmptyString: 'Это обязательное поле',
   textErrorURL: 'Здесь должна быть ссылка',
 }
-
+const errorsObj = {};
+inputsAddCard.concat(inputsEditCard).forEach(input => {
+  errorsObj[input.id] = document.querySelector(`#${input.id}-error`);
+})
 
 // создает пустую карточку места
 function createCard() {
@@ -78,11 +78,28 @@ function isValidity(field) {
 // Добавляет текст ошибки под полем, в котором происходит событие ввода, если оно не валидно
 function isFieldValidity(field) {
   const valid = isValidity(field);
+  let errorElem = errorsObj[field.id];
+
+  // Надо исправить +
+  // Цикл не нужен
+  // Обратитесь к  errorItemsArr[`${field.id}-error`] -- нет нужды в его поиске
+
+  // Все еще надо исправить
+  // У вас тут так все устроено что это всегода поле на котором событие, это условие всегда истинно
+  // У вас загораются на форме карточки два поля сразу потому что они пустые а обработчик на форме
+  // Если переделать часть кода и вешать обработчики отдельно на инпуты, то можно этого избежать,
+  // но я не думаю что вы сильно хотите сейчас половину работы переписать.
+  // Если вешать на инпуты слущатели, то обработчик проверяет валидность инпута, всю вот эту логику шпарит,
+  // а потом вызывает отдельный метод который валидирует всю форму и по результатам кнопку вкл/выкл.
+  // Такая идея, просто для информации, может в следующем спринте захотите рефакторинг сотворить.
+
+  // Так как сейчас нельзя потому что event глобальный, глобальные переменные трогать не очень хорошо
+  // Но про это на 8-й работе.
+
   // Это лишнее условие    ------   Условие позволяет выставлять ошибку валидации только на поле в котором произошло событие
   // 1. Вы event не пердаете, а получаете глобально
   // 2. Событие и так на поле происходит, вы же target передаете в метод, не currentTarget
   if (field === event.target) {
-    const errorElem = field.parentNode.querySelector(`#${field.id}-error`);
     errorElem.textContent = field.validationMessage;
   }
 
@@ -91,13 +108,16 @@ function isFieldValidity(field) {
 
 // Проверяет все ли переданные инпуты валидны
 function checkFormValidity(inputs) {
-  let valid = true;
-
+  // Можжно лучше
+  // Этот метод можно сделать сильно короче
+  // return Array.from(inputs).every((input) => isFieldValidity(input));
+  return Array.from(inputs).every((input) => isValidity(input));
+  /* let valid = true;
   inputs.forEach(input => {
     if (!isFieldValidity(input)) valid = false;
   })
 
-  return valid;
+  return valid; */
 }
 
 // выставляет кнопку в Enbld/Dsbld в зависимости от того true или false принятое значение state
@@ -122,16 +142,6 @@ function openedPopup(event) {
   let valid;
 
   if (clickElem === addButton) {
-    // Посоветую так -- лучше если кнопка будет при открытии всегда заблокирована +
-    // При таком подходе исключено случайное нажатие и повторная отправка неизмененных данных на сервер (лишняя операция)
-    // Надо исправить +
-    // Вы передаете все элементы, по которым потом прогоняете валидацию
-    // А надо только инпуты
-    // Соответственно, логично заранее (не в этом методе) выбрать инпуты обеих форм в разные массивы,
-    // как и кнопки сабмита, и тут уже просто скармливать их методу.
-    // Исправьте для обоих форм
-    // Возможно тут вообще не потребуются исправления а метод будет изменен вами,
-    // прочитайте все ревью до конца, особенно комментарий в методе установки слушателей валидации
     valid = checkFormValidity(inputsAddCard);
     toggleButton(buttonSubmitAddForm, valid);
     showPopup(popupAddPlace);
@@ -151,11 +161,7 @@ function openedPopup(event) {
   if (event.target.classList.contains('place-card__image')) {
     const imageItem = event.target.closest('.place-card__image');
     const src = imageItem.dataset.src;
-    // Надо исправить +
-    // Не надо вырезать URL картинки сложным парсингом
-    // Добавьте data-атрибут, сылку я давал
-    // Завтра дизайнер кавычки лишние поставит или пробел не там и сломается ваш парсинг
-    
+
     const image = popupImage.querySelector('.popup__image');
 
     image.setAttribute('src', src);
@@ -207,7 +213,6 @@ function closedPopup(event) {
   if (popup.id === 'image-popup') {
     popup.classList.remove('popup_is-opened');
     return;
-    // После return не нужен else +
   }
   resetErrorsForm(form);
   popup.classList.remove('popup_is-opened');
@@ -246,17 +251,13 @@ function editUserData(event) {
 formEditProfile.addEventListener('submit', editUserData);
 
 // Коллбэк слушателя события ввода на формах,
-function handlerInputForm(event, inputs, submitButton) {
 
+// Надо исправить
+// event не используется, не надо ни передавать ни принимать его
+function handlerInputForm(event, inputs, submitButton) {
+  // console.dir(errorItemsObj);
   // выводит сообщения под полем в котором идет ввод и записывает в valid валидна ли форма
   const valid = checkFormValidity(inputs);
-
-  // У функции должно быть одно назначение. toggleButton должна получить true/false как флаг +
-  // включения-отключения и элемент кнопки
-  // Проверку валидности из toggleButton лучше сюда перенести, это логичнее, тем самым +
-  // вы сможете включать-выключать кнопку когда захотите не перебирая инпуты и прочее и не делая
-  // массу ненужных запросов в DOM
-
   if (valid) {
     toggleButton(submitButton, true);
   } else {
@@ -269,13 +270,8 @@ function setEventListeners(popup) {
   const form = popup.querySelector('.popup__form');
   const inputs = Array.from(popup.querySelectorAll('input'));
   const submitButton = popup.querySelector('button');
-
+  // event передавать не нужно!!
   // Надо исправить
-  // Здесь получите массив инпутов формы, кнопку сабмита, +
-  // можно даже создать объект с элементами ошибок, где ключом будет id элемента
-  // И все эти данне передайте в handlerInputForm + 
-  // Тем самым вам не придется многократно получать эти элементы в последствии и нагружать DOM
-
   form.addEventListener('input', () => handlerInputForm(event, inputs, submitButton));
 }
 
@@ -285,14 +281,4 @@ setEventListeners(popupAddPlace);
 
 // Здравствуйте.
 
-// Нужен рефакторинг, рекомендации в коде. Стало лучше чем было в прошлый раз, но можно сделать еще проще и чище.
-
-// При создании карточки добавьте атрибут с url элементу карточки, а когда будет необходимо +
-// -- прочитаете его. Как это сделать https://developer.mozilla.org/ru/docs/Web/HTML/Global_attributes/data-*
-// Надо исправить
-
-
-
-
-
-
+// Есть еще несколько замечаний, но мы почти у цели. Исправляте и присылайте.
