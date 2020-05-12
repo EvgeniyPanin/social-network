@@ -76,9 +76,11 @@ function isValidity(field) {
 }
 
 // Добавляет текст ошибки под полем, в котором происходит событие ввода, если оно не валидно
-function isFieldValidity(field) {
-  const valid = isValidity(field);
+function toggleInputError(field) {
   let errorElem = errorsObj[field.id];
+
+  // Обновляем кастомную ошибку валидации поля
+  isValidity(field);
 
   // Надо исправить +
   // Цикл не нужен
@@ -96,28 +98,19 @@ function isFieldValidity(field) {
   // Так как сейчас нельзя потому что event глобальный, глобальные переменные трогать не очень хорошо
   // Но про это на 8-й работе.
 
-  // Это лишнее условие    ------   Условие позволяет выставлять ошибку валидации только на поле в котором произошло событие
+  // Это лишнее условие +
   // 1. Вы event не пердаете, а получаете глобально
   // 2. Событие и так на поле происходит, вы же target передаете в метод, не currentTarget
-  if (field === event.target) {
-    errorElem.textContent = field.validationMessage;
-  }
 
-  return valid;
+    errorElem.textContent = field.validationMessage;
 }
 
 // Проверяет все ли переданные инпуты валидны
 function checkFormValidity(inputs) {
-  // Можжно лучше
+  // Можжно лучше +
   // Этот метод можно сделать сильно короче
-  // return Array.from(inputs).every((input) => isFieldValidity(input));
+  // return Array.from(inputs).every((input) => toggleInputError(input));
   return Array.from(inputs).every((input) => isValidity(input));
-  /* let valid = true;
-  inputs.forEach(input => {
-    if (!isFieldValidity(input)) valid = false;
-  })
-
-  return valid; */
 }
 
 // выставляет кнопку в Enbld/Dsbld в зависимости от того true или false принятое значение state
@@ -250,14 +243,12 @@ function editUserData(event) {
 
 formEditProfile.addEventListener('submit', editUserData);
 
-// Коллбэк слушателя события ввода на формах,
-
-// Надо исправить
-// event не используется, не надо ни передавать ни принимать его
+// Коллбэк слушателя события ввода на инпутах форм
 function handlerInputForm(event, inputs, submitButton) {
-  // console.dir(errorItemsObj);
-  // выводит сообщения под полем в котором идет ввод и записывает в valid валидна ли форма
   const valid = checkFormValidity(inputs);
+
+  toggleInputError(event.target);
+
   if (valid) {
     toggleButton(submitButton, true);
   } else {
@@ -265,14 +256,14 @@ function handlerInputForm(event, inputs, submitButton) {
   }
 }
 
-// проставляет прослушивание событий на формах
+// проставляет прослушивание событий на инпутах попапа
 function setEventListeners(popup) {
-  const form = popup.querySelector('.popup__form');
   const inputs = Array.from(popup.querySelectorAll('input'));
   const submitButton = popup.querySelector('button');
-  // event передавать не нужно!!
-  // Надо исправить
-  form.addEventListener('input', () => handlerInputForm(event, inputs, submitButton));
+
+  inputs.forEach(input => {
+    input.addEventListener('input', () => handlerInputForm(event, inputs, submitButton));
+  })
 }
 
 setEventListeners(popupEditProfile);
