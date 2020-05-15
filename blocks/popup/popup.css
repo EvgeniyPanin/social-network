@@ -5,6 +5,11 @@
 @import url(./__input/popup__input.css);
 @import url(./__button/popup__button.css);
 @import url(./_is-opened/popup_is-opened.css);
+@import url(./__button/_place/popup__button_place_edit.css);
+@import url(./__content/_from/popup__content_from_image.css);
+@import url(./__image/popup__image.css);
+@import url(./__close/_place/popup__close_place_image-popup.css);
+@import url(./__button/_disabled/popup__button_disabled.css);
 
 .popup {
   position: fixed;

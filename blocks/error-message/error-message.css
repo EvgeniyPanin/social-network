@@ -1,0 +1,12 @@
+@import url(./_place/error-message_place_top.css);
+@import url(./_place/error-message_place_down.css);
+
+
+.error-message {
+    font-size: 12px;
+    line-height: 1.25;
+    color: #FF0000;
+    position: absolute;
+    left: 43px;
+    padding-top: 5px;
+}
