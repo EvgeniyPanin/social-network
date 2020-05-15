@@ -72,21 +72,20 @@ function isValidity(field) {
 }
 
 // Добавляет текст ошибки под полем, в котором происходит событие ввода, если оно не валидно
-function toggleInputError(field) {
-  let errorElem = errorsObj[field.id];
+function toggleInputError(field, errorsObj) {
+  const errorElem = errorsObj[field.id];
 
   // Обновляем кастомную ошибку валидации поля
   isValidity(field);
 
-    errorElem.textContent = field.validationMessage;
+  errorElem.textContent = field.validationMessage;
 }
 
 // Проверяет все ли переданные инпуты валидны
-function checkFormValidity(inputs) {
-  // Можжно лучше +
-  // Этот метод можно сделать сильно короче
-  // return Array.from(inputs).every((input) => toggleInputError(input));
-  return Array.from(inputs).every((input) => isValidity(input));
+function checkFormValidity(form) {
+  const inputs = Array.from(form.querySelectorAll('input'));
+
+  return inputs.every((input) => isValidity(input));
 }
 
 // выставляет кнопку в Enbld/Dsbld в зависимости от того true или false принятое значение state
@@ -105,43 +104,29 @@ function showPopup(popup) {
   popup.classList.add('popup_is-opened');
 }
 
-// коллбек, передаваемый слушателям событий клика по элементам, открывающим попапы
-function openedPopup(event) {
-  const clickElem = event.currentTarget;
-  let valid;
+function openedPopup(popup) {
+  const submitButton = popup.querySelector('button');
+  const form = popup.querySelector('.popup__form');
+  const valid = checkFormValidity(form);
 
-  if (clickElem === addButton) {
-    valid = checkFormValidity(inputsAddCard);
-    toggleButton(buttonSubmitAddForm, valid);
-    showPopup(popupAddPlace);
-  }
+  toggleButton(submitButton, valid);
+  showPopup(popup);
+}
 
-  if (clickElem === editButton) {
-    const { name, about: Job } = formEditProfile.elements;
+function openedImagePopup(evt) {
+  const imageItem = evt.target.closest('.place-card__image');
+  const src = imageItem.dataset.src;
 
-    name.value = userName.textContent;
-    Job.value = userJob.textContent;
+  const image = popupImage.querySelector('.popup__image');
 
-    valid = checkFormValidity(inputsEditCard);
-    toggleButton(buttonSubmitEditForm, valid);
-    showPopup(popupEditProfile);
-  }
+  image.setAttribute('src', src);
 
-  if (event.target.classList.contains('place-card__image')) {
-    const imageItem = event.target.closest('.place-card__image');
-    const src = imageItem.dataset.src;
-
-    const image = popupImage.querySelector('.popup__image');
-
-    image.setAttribute('src', src);
-
-    showPopup(popupImage);
-  }
+  showPopup(popupImage);
 }
 
 // Управляет действиями с контентом карточки в зависимости от того, в каком ее месте кликнули
-function contentManagement(event) {
-  const clickedElem = event.target;
+function contentManagement(evt) {
+  const clickedElem = evt.target;
   const card = clickedElem.closest('.place-card');
 
   if (clickedElem.classList.contains('place-card__like-icon')) {
@@ -153,77 +138,14 @@ function contentManagement(event) {
   }
 
   if (clickedElem.classList.contains('place-card__image')) {
-    openedPopup(event);
+    openedImagePopup(evt);
   }
 }
-
-// слушаем событие клика по контейнеру с карточками
-cardsContainer.addEventListener('click', contentManagement);
-
-
-addButton.addEventListener('click', openedPopup);
-editButton.addEventListener('click', openedPopup);
-
-
-// Удаляет все сообщения о ошибках под полями формы
-function resetErrorsForm(form) {
-  const formErrors = form.querySelectorAll('.error-message');
-
-  form.reset();
-
-  [...formErrors].forEach(errors => errors.textContent = '');
-}
-
-// закрывает попапы, у попапов с формами вызывает f() сброса полей перед закрытием
-function closedPopup(event) {
-  const popup = event.target.closest('.popup');
-  const form = popup.querySelector('.popup__form');
-
-  if (popup.id === 'image-popup') {
-    popup.classList.remove('popup_is-opened');
-    return;
-  }
-  resetErrorsForm(form);
-  popup.classList.remove('popup_is-opened');
-}
-
-// Проходим по всем закрывающим кнопкам и вешаем на них слушатель клика
-popupCloseButtons.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
-
-
-// Коллбэк обработчика клика по кнопке сабмит формы добавить новое место
-function formAddCard(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const { name: formName, link: formLink } = form.elements;
-
-  addCard(formName.value, formLink.value);
-  closedPopup(event);
-}
-
-formAddPlace.addEventListener('submit', formAddCard);
-
-
-//Коллбэк обработчика клика по кнопке сабмит формы редактирования профиля
-function editUserData(event) {
-  event.preventDefault();
-
-  const form = event.currentTarget;
-  const { name: Name, about: Job } = form.elements;
-
-  userName.textContent = Name.value;
-  userJob.textContent = Job.value;
-
-  closedPopup(event);
-}
-
-formEditProfile.addEventListener('submit', editUserData);
 
 // Коллбэк слушателя события ввода на инпутах форм
-function handlerInputForm(event, inputs, submitButton) {
-  const valid = checkFormValidity(inputs);
-
-  toggleInputError(event.target);
+function handlerInputForm(evt, form, submitButton, errorsObj) {
+  const valid = checkFormValidity(form);
+  toggleInputError(evt.target, errorsObj);
 
   if (valid) {
     toggleButton(submitButton, true);
@@ -245,12 +167,71 @@ function setEventListeners(popup) {
   inputs.forEach(input => {
     input.addEventListener('input', (evt) => handlerInputForm(evt, form, submitButton, errorsObj));
   })
+
+  const cleanErrors = () => {
+    for (let key in errorsObj) {
+      form.reset();
+      errorsObj[key].textContent = '';
+    }
+  }
+  return cleanErrors;
 }
 
-setEventListeners(popupEditProfile);
-setEventListeners(popupAddPlace);
+const cleanEditForm = setEventListeners(popupEditProfile);
+const cleanAddForm = setEventListeners(popupAddPlace);
+
+// закрывает попапы, у попапов с формами вызывает f() сброса полей перед закрытием
+function closedPopup(evt) {
+  const popup = event.target.closest('.popup');
+
+  switch (popup.id) {
+    case 'new-popup':
+      cleanAddForm();
+      break;
+
+    case 'edit-popup':
+      cleanEditForm();
+      break;
+  }
+  popup.classList.remove('popup_is-opened');
+}
+
+// слушаем событие клика по контейнеру с карточками
+cardsContainer.addEventListener('click', contentManagement);
 
 
-// Здравствуйте.
+addButton.addEventListener('click', (evt) => {
+  openedPopup(popupAddPlace);
+});
+editButton.addEventListener('click', (evt) => {
+  const { name, about: Job } = formEditProfile.elements;
 
-// Есть еще несколько замечаний, но мы почти у цели. Исправляте и присылайте.
+  name.value = userName.textContent;
+  Job.value = userJob.textContent;
+
+  openedPopup(popupEditProfile);
+});
+
+formAddPlace.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const form = evt.currentTarget;
+  const { name: formName, link: formLink } = form.elements;
+
+  addCard(formName.value, formLink.value);
+  closedPopup(evt);
+});
+
+formEditProfile.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const form = evt.currentTarget;
+  const { name: Name, about: Job } = form.elements;
+
+  userName.textContent = Name.value;
+  userJob.textContent = Job.value;
+
+  closedPopup(evt);
+});
+
+// Проходим по всем закрывающим кнопкам и вешаем на них слушатель клика
+popupCloseButtons.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
