@@ -11,10 +11,6 @@ const userName = document.querySelector('.user-info__name');
 const userJob = document.querySelector('.user-info__job');
 const formEditProfile = document.forms.edit;
 const formAddPlace = document.forms.new;
-const inputsAddCard = Array.from(formAddPlace.querySelectorAll('input'));
-const buttonSubmitAddForm = formAddPlace.querySelector('button');
-const inputsEditCard = Array.from(formEditProfile.querySelectorAll('input'));
-const buttonSubmitEditForm = formEditProfile.querySelector('button');
 const cardTemplate = document.querySelector('#card-template').content.querySelector('.place-card');
 const errorMessage = {
   textErrorLength: 'Должно быть от 2 до 30 символов',
