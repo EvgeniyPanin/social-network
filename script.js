@@ -129,16 +129,18 @@ function contentManagement(evt) {
   const clickedElem = evt.target;
   const card = clickedElem.closest('.place-card');
 
-  if (clickedElem.classList.contains('place-card__like-icon')) {
-    clickedElem.classList.toggle('place-card__like-icon_liked');
-  }
+  switch (clickedElem.id) {
+    case 'card-like':
+      clickedElem.classList.toggle('place-card__like-icon_liked');
+      break;
 
-  if (clickedElem.classList.contains('place-card__delete-icon')) {
-    cardsContainer.removeChild(card);
-  }
+    case 'card-delete':
+      cardsContainer.removeChild(card);
+      break;
 
-  if (clickedElem.classList.contains('place-card__image')) {
-    openedImagePopup(evt);
+    case 'card-image':
+      openedImagePopup(evt);
+      break;
   }
 }
 
@@ -235,3 +237,4 @@ formEditProfile.addEventListener('submit', (evt) => {
 
 // Проходим по всем закрывающим кнопкам и вешаем на них слушатель клика
 popupCloseButtons.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
+
