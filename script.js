@@ -9,13 +9,13 @@ const editButton = document.querySelector('.user-info__edit');
 const popupCloseButtons = document.querySelectorAll('.popup__close');
 const userName = document.querySelector('.user-info__name');
 const userJob = document.querySelector('.user-info__job');
+const formEditProfile = document.forms.edit;
 const formAddPlace = document.forms.new;
 const inputsAddCard = Array.from(formAddPlace.querySelectorAll('input'));
 const buttonSubmitAddForm = formAddPlace.querySelector('button');
-const formEditProfile = document.forms.edit;
 const inputsEditCard = Array.from(formEditProfile.querySelectorAll('input'));
 const buttonSubmitEditForm = formEditProfile.querySelector('button');
-const template = document.querySelector('#card-template').content.querySelector('.place-card');
+const cardTemplate = document.querySelector('#card-template').content.querySelector('.place-card');
 const errorMessage = {
   textErrorLength: 'Должно быть от 2 до 30 символов',
   textErrorEmptyString: 'Это обязательное поле',
@@ -24,7 +24,7 @@ const errorMessage = {
 
 // создает пустую карточку места
 function createCard() {
-  const newCard = template.cloneNode(true);
+  const newCard = cardTemplate.cloneNode(true);
   return newCard;
 }
 
@@ -48,6 +48,47 @@ function addCard(name, link) {
 initialCards.forEach(place => {
   addCard(place.name, place.link)
 });
+
+// выводит на страницу переданный попап
+function showPopup(popup) {
+  popup.classList.add('popup_is-opened');
+}
+
+// переключает состояние кнопки и открывает попап
+function openedPopup(popup) {
+  const submitButton = popup.querySelector('button');
+  const form = popup.querySelector('.popup__form');
+  const valid = checkFormValidity(form);
+
+  toggleButton(submitButton, valid);
+  showPopup(popup);
+}
+
+// Управляет действиями с контентом карточки в зависимости от того, в каком ее месте кликнули
+function contentManagement(evt) {
+  const clickedElem = evt.target;
+  const card = clickedElem.closest('.place-card');
+
+  switch (clickedElem.id) {
+    case 'card-like':
+      clickedElem.classList.toggle('place-card__like-icon_liked');
+      break;
+
+    case 'card-delete':
+      cardsContainer.removeChild(card);
+      break;
+
+    case 'card-image':
+      const imageItem = evt.target.closest('.place-card__image');
+      const src = imageItem.dataset.src;
+      const image = popupImage.querySelector('.popup__image');
+
+      image.setAttribute('src', src);
+
+      showPopup(popupImage);
+      break;
+  }
+}
 
 // Функция валидирующая поле, и устанавливающая кастомную ошибку валидации
 function isValidity(field) {
@@ -96,51 +137,6 @@ function toggleButton(submitButton, state) {
   } else {
     submitButton.setAttribute('disabled', true);
     submitButton.classList.add('popup__button_disabled');
-  }
-}
-
-// выводит на страницу переданный попап
-function showPopup(popup) {
-  popup.classList.add('popup_is-opened');
-}
-
-function openedPopup(popup) {
-  const submitButton = popup.querySelector('button');
-  const form = popup.querySelector('.popup__form');
-  const valid = checkFormValidity(form);
-
-  toggleButton(submitButton, valid);
-  showPopup(popup);
-}
-
-function openedImagePopup(evt) {
-  const imageItem = evt.target.closest('.place-card__image');
-  const src = imageItem.dataset.src;
-
-  const image = popupImage.querySelector('.popup__image');
-
-  image.setAttribute('src', src);
-
-  showPopup(popupImage);
-}
-
-// Управляет действиями с контентом карточки в зависимости от того, в каком ее месте кликнули
-function contentManagement(evt) {
-  const clickedElem = evt.target;
-  const card = clickedElem.closest('.place-card');
-
-  switch (clickedElem.id) {
-    case 'card-like':
-      clickedElem.classList.toggle('place-card__like-icon_liked');
-      break;
-
-    case 'card-delete':
-      cardsContainer.removeChild(card);
-      break;
-
-    case 'card-image':
-      openedImagePopup(evt);
-      break;
   }
 }
 
@@ -198,10 +194,13 @@ function closedPopup(evt) {
   popup.classList.remove('popup_is-opened');
 }
 
+// Проходим по всем закрывающим кнопкам и вешаем на них слушатель клика
+popupCloseButtons.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
+
 // слушаем событие клика по контейнеру с карточками
 cardsContainer.addEventListener('click', contentManagement);
 
-
+// проставляем слушатели на кнопки открытия попапов
 addButton.addEventListener('click', (evt) => {
   openedPopup(popupAddPlace);
 });
@@ -214,6 +213,7 @@ editButton.addEventListener('click', (evt) => {
   openedPopup(popupEditProfile);
 });
 
+// слушатель события сабмит формы добавления карточки
 formAddPlace.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const form = evt.currentTarget;
@@ -223,6 +223,7 @@ formAddPlace.addEventListener('submit', (evt) => {
   closedPopup(evt);
 });
 
+// слушатель события сабмит формы редактирования профиля
 formEditProfile.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
@@ -234,7 +235,4 @@ formEditProfile.addEventListener('submit', (evt) => {
 
   closedPopup(evt);
 });
-
-// Проходим по всем закрывающим кнопкам и вешаем на них слушатель клика
-popupCloseButtons.forEach(closeButton => { closeButton.addEventListener('click', closedPopup) });
 
