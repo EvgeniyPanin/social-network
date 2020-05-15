@@ -21,10 +21,6 @@ const errorMessage = {
   textErrorEmptyString: 'Это обязательное поле',
   textErrorURL: 'Здесь должна быть ссылка',
 }
-const errorsObj = {};
-inputsAddCard.concat(inputsEditCard).forEach(input => {
-  errorsObj[input.id] = document.querySelector(`#${input.id}-error`);
-})
 
 // создает пустую карточку места
 function createCard() {
@@ -238,11 +234,16 @@ function handlerInputForm(event, inputs, submitButton) {
 
 // проставляет прослушивание событий на инпутах попапа
 function setEventListeners(popup) {
+  const form = popup.querySelector('.popup__form');
   const inputs = Array.from(popup.querySelectorAll('input'));
   const submitButton = popup.querySelector('button');
+  const errorsObj = {};
+  inputs.forEach(input => {
+    errorsObj[input.id] = document.querySelector(`#${input.id}-error`);
+  })
 
   inputs.forEach(input => {
-    input.addEventListener('input', () => handlerInputForm(event, inputs, submitButton));
+    input.addEventListener('input', (evt) => handlerInputForm(evt, form, submitButton, errorsObj));
   })
 }
 
