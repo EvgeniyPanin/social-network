@@ -41,6 +41,10 @@ class FormValidator {
 
     toggleInputError(field) {
         const errorElem = this.errorsObj[field.id];
+
+        //обновляем кастомную ошибку валидации
+        this.isValidity(field);
+
         errorElem.textContent = field.validationMessage;
     }
 
