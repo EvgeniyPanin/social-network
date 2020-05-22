@@ -4,7 +4,6 @@ class Popup {
     constructor(popup) {
         this.popup = popup;
         this.closeButton = popup.querySelector('.popup__close');
-        this.form = popup.querySelector('.popup__form');
     }
 
     open() {
@@ -13,5 +12,12 @@ class Popup {
 
     close() {
         this.popup.classList.remove('popup_is-opened');
+    }
+
+    setEventListenerClose(cleanFunction) {
+        this.closeButton.addEventListener('click', (evt) => {
+            if (cleanFunction) cleanFunction();
+            this.close();
+        })
     }
 }

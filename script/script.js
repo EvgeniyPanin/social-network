@@ -5,8 +5,8 @@ const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
 const createCardObj = (...args) => new Card(...args);
 
-const popupEditProfile = new Popup(document.querySelector('#edit-popup'));
-const popupAddPlace = new Popup(document.querySelector('#new-popup'));
+const popupEditProfile = new PopupHasForm(document.querySelector('#edit-popup'));
+const popupAddPlace = new PopupHasForm(document.querySelector('#new-popup'));
 const popupImage = new Popup(document.querySelector('#image-popup'));
 
 const userObj = new UserInfo();
@@ -57,16 +57,6 @@ popupAddPlace.form.addEventListener('submit', (evt) => {
   cleanAddForm();
 })
 
-popupEditProfile.closeButton.addEventListener('click', (evt) => {
-  popupEditProfile.close();
-  cleanEditForm();
-})
-
-popupAddPlace.closeButton.addEventListener('click', (evt) => {
-  popupAddPlace.close();
-  cleanAddForm();
-})
-
-popupImage.closeButton.addEventListener('click', (evt) => {
-  popupImage.close();
-})
+popupEditProfile.setEventListenerClose(cleanEditForm);
+popupAddPlace.setEventListenerClose(cleanAddForm);
+popupImage.setEventListenerClose();
