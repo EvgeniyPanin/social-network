@@ -1,4 +1,9 @@
 class FormValidator {
+    static _errorMessage = {
+        textErrorLength: 'Должно быть от 2 до 30 символов',
+        textErrorEmptyString: 'Это обязательное поле',
+        textErrorURL: 'Здесь должна быть ссылка',
+      };
     constructor(form) {
         this.form = form;
         this.inputs = [...form.querySelectorAll('input')];
@@ -12,33 +17,40 @@ class FormValidator {
         input.setCustomValidity("");
 
         if (input.validity.valueMissing) {
-            input.setCustomValidity(errorMessage.textErrorEmptyString);
+            input.setCustomValidity(FormValidator._errorMessage.textErrorEmptyString);
             return false
         }
 
         if (input.validity.tooShort || input.validity.tooLong) {
-            input.setCustomValidity(errorMessage.textErrorLength);
+            input.setCustomValidity(FormValidator._errorMessage.textErrorLength);
             return false
         }
 
         if (input.validity.typeMismatch && input.type === 'url') {
-            input.setCustomValidity(errorMessage.textErrorURL);
+            input.setCustomValidity(FormValidator._errorMessage.textErrorURL);
             return false
         }
 
         return input.checkValidity();
-            }
-
-    checkInputValidity(evt) {
-        const input = evt.target;
-        const valid = this.inputs.every(input => this.isValidity(input));
-        const errorField = this.errorsObj[input.id];
-
-        this.isValidity(input);
-        errorField.textContent = input.validationMessage;
-
-        this.setSubmitButtonState.bind(this, valid)();
     }
+
+    checkFormValidity(form) {
+        const inputs = [...form.querySelectorAll('input')];
+        return inputs.every((input) => this.isValidity(input));
+    }
+
+    toggleInputError(field) {
+        const errorElem = this.errorsObj[field.id];
+        errorElem.textContent = field.validationMessage;
+    }
+
+    handlerInputForm = (evt) => {
+        const form = this.form;
+        const valid = this.checkFormValidity(form);
+        this.toggleInputError(evt.target);
+      
+        this.setSubmitButtonState(valid);
+      }
 
     setSubmitButtonState(state) {
         if (state) {
@@ -52,7 +64,7 @@ class FormValidator {
 
     setEventListeners() {
         this.inputs.forEach(input => {
-            input.addEventListener('input', this.checkInputValidity.bind(this));
+            input.addEventListener('input', this.handlerInputForm);
         })
 
         const cleanErrors = () => {
