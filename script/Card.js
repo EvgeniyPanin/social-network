@@ -13,15 +13,12 @@ class Card {
         evt.target.classList.toggle('place-card__like-icon_liked');
     }
 
-    remove(evt) {
+    remove = (evt) => {
         evt.stopPropagation();
-        const card = evt.target.closest('.place-card');
 
-        card.querySelector('.place-card__like-icon').removeEventListener('click', this.like);
-        card.querySelector('.place-card__image').removeEventListener('click',  this.handlerOpenContant);
-        card.querySelector('.place-card__delete-icon').removeEventListener('click', this.handlerRemove);
+        this.removeEventListeners();
 
-        card.remove();
+        this.card.remove();
     }
 
     create() {
@@ -34,18 +31,36 @@ class Card {
 
         cardImage.dataset.src = this.link;
         
-        this.card.querySelector('.place-card__like-icon').addEventListener('click', this.like);
-        this.card.querySelector('.place-card__delete-icon').addEventListener('click', this.handlerRemove);
-        this.card.querySelector('.place-card__image').addEventListener('click', this.handlerOpenContant);
+        this.likeIkon = this.card.querySelector('.place-card__like-icon')
+        this.deleteButton = this.card.querySelector('.place-card__delete-icon')
+        this.cardImage = this.card.querySelector('.place-card__image')
+
+        this.setEventListeners();
 
         return this.card;
     }
 
-    handlerRemove = (evt) => this.remove(evt);
+
     handlerOpenContant = (evt) => {
         const src = this.card.querySelector('.place-card__image').dataset.src;
         const image = this.renderContantPopup.popup.querySelector('.popup__image');
+
         image.setAttribute('src', src);
+
+        this.renderContantPopup.setEventListenerClose();
+
         this.renderContantPopup.open();
     };
+
+    setEventListeners = () => {
+        this.likeIkon.addEventListener('click', this.like);
+        this.deleteButton.addEventListener('click', this.remove);
+        this.cardImage.addEventListener('click', this.handlerOpenContant);
+    }
+
+    removeEventListeners = () => {
+        this.likeIkon.removeEventListener('click', this.like);
+        this.deleteButton.removeEventListener('click', this.remove);
+        this.cardImage.removeEventListener('click', this.handlerOpenContant);
+    }
 }

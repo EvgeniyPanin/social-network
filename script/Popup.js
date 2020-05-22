@@ -11,13 +11,16 @@ class Popup {
     }
 
     close() {
+        if (this.cleanForm) this.cleanForm();
+        this.closeButton.removeEventListener('click', this.handlerCloseListener);
         this.popup.classList.remove('popup_is-opened');
     }
 
+    handlerCloseListener = (evt) => {
+        this.close();
+    }
+
     setEventListenerClose(cleanFunction) {
-        this.closeButton.addEventListener('click', (evt) => {
-            if (cleanFunction) cleanFunction();
-            this.close();
-        })
+        this.closeButton.addEventListener('click', this.handlerCloseListener)
     }
 }

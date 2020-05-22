@@ -17,8 +17,9 @@ cardsContainer.render(popupImage);
 const editFormManager = new FormValidator(popupEditProfile.form);
 const addPlaceFormManager = new FormValidator(popupAddPlace.form);
 
-const cleanEditForm = editFormManager.setEventListeners();
-const cleanAddForm = addPlaceFormManager.setEventListeners();
+// записываем в свойства объектов попапов функцию очищающую форму, которую вернет функция устанавливающая слушатели инпутов
+popupEditProfile.cleanForm = editFormManager.setEventListeners();
+popupAddPlace.cleanForm = addPlaceFormManager.setEventListeners();
 
 editButton.addEventListener('click', (evt) => {
   userObj.setUserInfo(popupEditProfile.form);
@@ -26,11 +27,15 @@ editButton.addEventListener('click', (evt) => {
   const valid = editFormManager.checkFormValidity(popupEditProfile.form);
   editFormManager.setSubmitButtonState(valid);
 
+  popupEditProfile.setEventListenerClose();
+
   popupEditProfile.open(evt);
 });
 addButton.addEventListener('click', (evt) => {
   const valid = addPlaceFormManager.checkFormValidity(popupAddPlace.form);
   addPlaceFormManager.setSubmitButtonState(valid);
+  
+  popupAddPlace.setEventListenerClose();
 
   popupAddPlace.open(evt);
 });
@@ -42,9 +47,7 @@ popupEditProfile.form.addEventListener('submit', (evt) => {
 
   userObj.updateUserInfo(name.value, about.value);
   popupEditProfile.close();
-  cleanEditForm();
 })
-
 popupAddPlace.form.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
@@ -54,9 +57,4 @@ popupAddPlace.form.addEventListener('submit', (evt) => {
   cardsContainer.addCard(card.create());
 
   popupAddPlace.close();
-  cleanAddForm();
 })
-
-popupEditProfile.setEventListenerClose(cleanEditForm);
-popupAddPlace.setEventListenerClose(cleanAddForm);
-popupImage.setEventListenerClose();
