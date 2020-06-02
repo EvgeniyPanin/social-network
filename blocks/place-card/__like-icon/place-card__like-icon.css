@@ -15,3 +15,11 @@
 .place-card__like-icon:hover {
   transform: scale(1.03);
 }
+
+.place-card__like-icon:after {
+  content: '';
+  width: 9px;
+  height: 13px;
+  position: relative;
+  top: 18px;
+}

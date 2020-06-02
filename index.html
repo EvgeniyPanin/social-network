@@ -27,12 +27,13 @@
 
       <template id='card-template' style="display: none;">
         <div class="place-card">
-            <div class="place-card__image" id="card-image" style="background-image: url(https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg)">
+            <div class="place-card__image" id="card-image">
                 <button class="place-card__delete-icon" id="card-delete"></button>
             </div>
             <div class="place-card__description">
-                <h3 class="place-card__name">Камчатка</h3>
-            <button class="place-card__like-icon" id="card-like"></button>
+              <h3 class="place-card__name"></h3>
+              <button class="place-card__like-icon" id="card-like"></button>
+              <p class="place-card__like-counter"></p>
             </div>  
         </div> 
       </template> 
@@ -80,6 +81,7 @@
   <script src="./script/CardList.js"></script>
   <script src="./script/UserInfo.js"></script>
   <script src="./script/FormValidator.js"></script>
+  <script src="./script/CreateRequest.js"></script>
   <script src="./script/script.js"></script>
 </body>
 </html>

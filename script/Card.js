@@ -3,10 +3,12 @@
 class Card {
     static _cardTemplate = document.querySelector('#card-template').content.querySelector('.place-card');
 
-    constructor(name, link, renderContantPopup) {
-        this.name = name;
-        this.link = link;
-        this.renderContantPopup = renderContantPopup;
+    constructor(obj) {
+        this.name = obj.name;
+        this.link = obj.link;
+        this.renderContantPopup = obj.renderContantPopup;
+        this.likesArr = obj.likesArr;
+        this.requestCreater = obj.requestCreater;
     }
 
     like(evt) {
@@ -34,10 +36,20 @@ class Card {
         this.likeIkon = this.card.querySelector('.place-card__like-icon');
         this.deleteButton = this.card.querySelector('.place-card__delete-icon');
         this.cardImage = this.card.querySelector('.place-card__image');
+        this.likesCounterElem = this.card.querySelector('.place-card__like-counter');
 
         this.setEventListeners();
+        this.renderLikesCounter();
 
         return this.card;
+    }
+
+    renderLikesCounter() {
+        if (this.likesArr.length > 0) {
+            this.likesCounterElem.textContent = this.likesArr.length;
+            return;
+        }
+        this.likesCounterElem.textContent = '';
     }
 
 

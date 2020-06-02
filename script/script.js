@@ -1,42 +1,46 @@
 "use strict";
 
+const cohort = 'cohort11';
+const token = '51432599-1180-4874-9f6d-b347abfbe18a';
+const apiURL = 'https://praktikum.tk';
+const request = new CreateRequest(apiURL, cohort, token);
+
 const container = document.querySelector('.places-list');
 const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
 const userName = document.querySelector('.user-info__name');
 const aboutUser = document.querySelector('.user-info__job');
 const userAvatar = document.querySelector('.user-info__photo');
-const createCardObj = (...args) => new Card(...args).create();
+const createCardObj = (obj) => new Card(obj).create();
 
 const popupEditProfile = new PopupHasForm(document.querySelector('#edit-popup'));
 const popupAddPlace = new PopupHasForm(document.querySelector('#new-popup'));
 const popupImage = new Popup(document.querySelector('#image-popup'));
 
+const cardsContainer = new CardList(container, createCardObj);
 const userObj = new UserInfo(userName, aboutUser, userAvatar);
 
-function request(path) {
-  return fetch(`https://praktikum.tk/cohort11/${path}`, {
-  headers: {
-    authorization: '51432599-1180-4874-9f6d-b347abfbe18a'
-  }
-})
-}
 
-request('users/me')
-  .then(res => res.json())
-  .then((result) => {
-    console.log(result);
-    userObj.updateUserInfo(result.name, result.about, result.avatar);
-  });
+request.buildRequest({
+                      path: 'users/me', 
+                      method: 'GET'
+                    })
+                      .then(res => res.json())
+                      .then((res) => {
+                        userObj.updateUserInfo(res.name, res.about, res.avatar);
+                      });
 
-request('cards')
-  .then(res => res.json())
-  .then((result) => {
-    const initialCards = result;
-    const cardsContainer = new CardList(container, initialCards, createCardObj);
-    cardsContainer.render(popupImage);
-  });
-
+request.buildRequest({path: 'cards', 
+                      method: 'GET'})
+                                    .then(res => res.json())
+                                    .then((res) => {
+                                      // console.log(res.forEach((card) => {console.log(card.owner.name)}));
+                                      res.forEach((elem) => {
+                                        cardsContainer.render({'elem': elem, 
+                                                              'popup': popupImage, 
+                                                              'requestCreater': request});
+                                                            });
+                                    });
 
 const editFormManager = new FormValidator(popupEditProfile.form);
 const addPlaceFormManager = new FormValidator(popupAddPlace.form);
@@ -69,16 +73,39 @@ popupEditProfile.form.addEventListener('submit', (evt) => {
 
   const {name, about} = popupEditProfile.form.elements;
 
-  userObj.updateUserInfo(name.value, about.value);
+  request.buildRequest({
+                        path: 'users/me', 
+                        method:'PATCH',
+                        contentType: 'application/json',
+                        jsonObj: {
+                            name: name.value,
+                            about: about.value,
+                          }})
+                            .then(res => res.json())
+                            .then((result) => {
+                              userObj.updateUserInfo(result.name, result.about, result.avatar);
+                            })
   popupEditProfile.close();
 })
 popupAddPlace.form.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const {name, link} = popupAddPlace.form.elements;
-  const card = createCardObj(name.value, link.value, popupImage);
 
-  cardsContainer.addCard(card);
-
+  request.buildRequest({
+                        path: 'cards', 
+                        method:'POST',
+                        contentType: 'application/json',
+                        jsonObj: {
+                                  name: name.value,
+                                  link: link.value,
+                                  },})
+                                    .then(res => res.json())
+                                    .then((res) => {
+                                      console.log(res);
+                                      const card = cardsContainer.buildFunction(res.name, res.link, popupImage);
+                                      cardsContainer.addCard(card);
+                                    })
+                                    .catch((err) => console.log(err))
   popupAddPlace.close();
 })
