@@ -36,7 +36,6 @@ class Card {
         this.cardImage = this.card.querySelector('.place-card__image');
 
         this.setEventListeners();
-        console.log(this.card);
 
         return this.card;
     }

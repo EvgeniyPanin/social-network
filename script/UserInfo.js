@@ -1,7 +1,8 @@
 class UserInfo {
-    constructor() {
-        this.userName = document.querySelector('.user-info__name');
-        this.aboutUser = document.querySelector('.user-info__job');
+    constructor(userName, aboutUser, userAvatar) {
+        this.userName = userName;
+        this.aboutUser = aboutUser;
+        this.userAvatar = userAvatar;
     }
 
     setUserInfo(form) {
@@ -10,8 +11,9 @@ class UserInfo {
         about.value = this.aboutUser.textContent;
     }
 
-    updateUserInfo(name, about) {
+    updateUserInfo(name, about, linkAvatar) {
         this.userName.textContent = name;
         this.aboutUser.textContent = about;
+        this.userAvatar.style.backgroundImage = `url(${linkAvatar})`;
     }
 }

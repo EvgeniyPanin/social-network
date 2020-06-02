@@ -5,7 +5,7 @@
   border-radius: 50%;
   background-size: cover;
   background-position: center;
-  background-image: url(../../../images/avatar.jpg);
+  /* background-image: url(../../../images/avatar.jpg); */
 }
 
 @media screen and (max-width: 980px) {

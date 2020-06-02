@@ -3,16 +3,40 @@
 const container = document.querySelector('.places-list');
 const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
+const userName = document.querySelector('.user-info__name');
+const aboutUser = document.querySelector('.user-info__job');
+const userAvatar = document.querySelector('.user-info__photo');
 const createCardObj = (...args) => new Card(...args).create();
 
 const popupEditProfile = new PopupHasForm(document.querySelector('#edit-popup'));
 const popupAddPlace = new PopupHasForm(document.querySelector('#new-popup'));
 const popupImage = new Popup(document.querySelector('#image-popup'));
 
-const userObj = new UserInfo();
+const userObj = new UserInfo(userName, aboutUser, userAvatar);
 
-const cardsContainer = new CardList(container, initialCards, createCardObj);
-cardsContainer.render(popupImage);
+function request(path) {
+  return fetch(`https://praktikum.tk/cohort11/${path}`, {
+  headers: {
+    authorization: '51432599-1180-4874-9f6d-b347abfbe18a'
+  }
+})
+}
+
+request('users/me')
+  .then(res => res.json())
+  .then((result) => {
+    console.log(result);
+    userObj.updateUserInfo(result.name, result.about, result.avatar);
+  });
+
+request('cards')
+  .then(res => res.json())
+  .then((result) => {
+    const initialCards = result;
+    const cardsContainer = new CardList(container, initialCards, createCardObj);
+    cardsContainer.render(popupImage);
+  });
+
 
 const editFormManager = new FormValidator(popupEditProfile.form);
 const addPlaceFormManager = new FormValidator(popupAddPlace.form);
