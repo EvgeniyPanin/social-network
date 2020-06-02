@@ -17,7 +17,7 @@ class CardList {
             const cardLink = place.link;
             const card = this.buildFunction(cardName, cardLink, renderContantPopup);
 
-            this.addCard(card.create());
+            this.addCard(card);
         })
     }
 }

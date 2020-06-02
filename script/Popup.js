@@ -20,7 +20,7 @@ class Popup {
         this.close();
     }
 
-    setEventListenerClose(cleanFunction) {
+    setEventListenerClose() {
         this.closeButton.addEventListener('click', this.handlerCloseListener)
     }
 }

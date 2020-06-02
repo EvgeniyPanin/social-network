@@ -3,7 +3,7 @@
 const container = document.querySelector('.places-list');
 const addButton = document.querySelector('.user-info__button');
 const editButton = document.querySelector('.user-info__edit');
-const createCardObj = (...args) => new Card(...args);
+const createCardObj = (...args) => new Card(...args).create();
 
 const popupEditProfile = new PopupHasForm(document.querySelector('#edit-popup'));
 const popupAddPlace = new PopupHasForm(document.querySelector('#new-popup'));
@@ -54,7 +54,7 @@ popupAddPlace.form.addEventListener('submit', (evt) => {
   const {name, link} = popupAddPlace.form.elements;
   const card = createCardObj(name.value, link.value, popupImage);
 
-  cardsContainer.addCard(card.create());
+  cardsContainer.addCard(card);
 
   popupAddPlace.close();
 })

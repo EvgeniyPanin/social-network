@@ -31,11 +31,12 @@ class Card {
 
         cardImage.dataset.src = this.link;
         
-        this.likeIkon = this.card.querySelector('.place-card__like-icon')
-        this.deleteButton = this.card.querySelector('.place-card__delete-icon')
-        this.cardImage = this.card.querySelector('.place-card__image')
+        this.likeIkon = this.card.querySelector('.place-card__like-icon');
+        this.deleteButton = this.card.querySelector('.place-card__delete-icon');
+        this.cardImage = this.card.querySelector('.place-card__image');
 
         this.setEventListeners();
+        console.log(this.card);
 
         return this.card;
     }
