@@ -12,7 +12,7 @@ class Card {
         this.userID = obj.userID;
         this.likesArr = obj.elem.likes;
         this.renderContantPopup = obj.renderContantPopup;
-        this.requestCreater = obj.requestCreater;
+        this.api = obj.requestCreater;
     }
 
     like = (evt) => {
@@ -21,30 +21,37 @@ class Card {
 
         evt.target.classList.toggle('place-card__like-icon_liked');
 
-        this.requestCreater.buildRequest({'path': `cards/like/${this._id}`,
-                                        'method': method,
-                                        'contentType': 'application/json',
+        this.api.buildRequest({
+                                'path': `cards/like/${this._id}`,
+                                'method': method,
+                                'contentType': 'application/json',
+                                })
+                                    .then(res => {
+                                        if (res.ok) return res.json();
+                                        return Promise.reject(`Ошибка: ${res.status} ${res.statusText}`);
                                         })
-                                        .then(res => res.json())
-                                        .then((res) => {
-                                            this.likesArr = res.likes;
-                                            this.renderLikesCounter();
-                                        });
-    }
+                                    .then((res) => {
+                                        this.likesArr = res.likes;
+                                        this.renderLikesCounter();
+                                    })
+                                    .catch((err) => this.api.showAlert(err))
+    };
 
     remove = (evt) => {
-        this.requestCreater.buildRequest({path: `cards/${this._id}`,
-                                        method:'DELETE',
-                                        })
-                                            .then(res => res.json())
-                                            .then((res) => {
-                                                console.log(res);
-                                            });
-
-        this.removeEventListeners();
-
-        this.card.remove();
-    }
+        this.api.buildRequest({
+                                path: `cards/${this._id}`,
+                                method:'DELETE',
+                            })
+                                .then(res => {
+                                    if (res.ok) return res.json();
+                                    return Promise.reject(`Ошибка: ${res.status}`);
+                                })
+                                .then((res) => {
+                                    this.removeEventListeners();
+                                    this.card.remove();
+                                })
+                                .catch((err) => this.api.showAlert(err))
+    };
 
     create() {
         this.card = Card._cardTemplate.cloneNode(true);
@@ -62,8 +69,7 @@ class Card {
         this.likesCounterElem = this.card.querySelector('.place-card__like-counter');
 
         if (this.isMyCard()) this.deleteButton.style.display = 'block';
-        this.hasMyLike();
-        if (this.isLike) this.likeIkon.classList.add('place-card__like-icon_liked');
+        if (this.hasMyLike()) this.likeIkon.classList.add('place-card__like-icon_liked');
 
         this.setEventListeners();
         this.renderLikesCounter();
@@ -85,13 +91,14 @@ class Card {
 
     hasMyLike = () => {
         this.isLike = this.likesArr.some((elem) => elem._id === this.userID);
+        return this.isLike;
     }
 
     handlerDeleteClick = (evt) => {
-        evt.stopPropagation();  
+        evt.stopPropagation();
+
         const conf = window.confirm('Вы действительно хотите удалить эту карточку?');
         if (conf) this.remove(evt);
-
     }
 
     handlerOpenContant = (evt) => {
