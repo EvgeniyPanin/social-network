@@ -67,6 +67,18 @@
       </div>
     </div>
 
+    <div class="popup" id="edit-image-popup">
+      <div class="popup__content">
+        <img src="./images/close.svg" alt="" class="popup__close">
+        <h3 class="popup__title">Обновить аватар</h3>
+        <form class="popup__form" name="edit" novalidate>
+          <input id = "avatar_url" type="url" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на аватар" required>
+          <span id = "avatar_url-error" class="error-message"></span>
+          <button type class="button popup__button popup__button_place_edit">Сохранить</button>
+        </form>
+      </div>
+    </div>
+
     <div class="popup" id="image-popup">
       <div class="popup__content popup__content_from_image">
         <img src="./images/close.svg" alt="" class="popup__close popup__close_place_image-popup">

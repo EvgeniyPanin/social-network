@@ -8,8 +8,8 @@ class CreateRequest {
     buildRequest(obj) {
         return fetch(`${this.apiURL}/${this.cohort}/${obj.path}`, {
             'method': obj.method,
-            headers: {
-                authorization: this.token,
+            'headers': {
+                'authorization': this.token,
                 'Content-Type': obj.contentType,
             },
             body: JSON.stringify(obj.jsonObj)
