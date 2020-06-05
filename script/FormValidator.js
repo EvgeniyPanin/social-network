@@ -10,7 +10,7 @@ class FormValidator {
         this.submitButton = form.querySelector('button');
         this.errorsObj = {};
         this.inputs.forEach(input => {
-            this.errorsObj[input.id] = document.querySelector(`#${input.id}-error`);
+            this.errorsObj[input.id] = this.form.querySelector(`#${input.id}-error`);
         })
     }
     isValidity(input) {
@@ -35,8 +35,7 @@ class FormValidator {
     }
 
     checkFormValidity(form) {
-        const inputs = [...form.querySelectorAll('input')];
-        return inputs.every((input) => this.isValidity(input));
+        return [...this.inputs].every((input) => this.isValidity(input));
     }
 
     toggleInputError(field) {
@@ -61,7 +60,7 @@ class FormValidator {
             this.submitButton.removeAttribute('disabled');
             this.submitButton.classList.remove('popup__button_disabled');
           } else {
-            this.submitButton.setAttribute('disabled', true);
+            this.submitButton.setAttribute('disabled', 'disabled');
             this.submitButton.classList.add('popup__button_disabled');
           }
     }
@@ -77,6 +76,7 @@ class FormValidator {
               this.errorsObj[key].textContent = '';
             }
           }
-          return cleanErrors;
+          
+        return cleanErrors;
     }
 }
