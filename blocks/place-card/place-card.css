@@ -5,6 +5,7 @@
 @import url(./__name/place-card__name.css);
 @import url(./__like-icon/place-card__like-icon.css);
 @import url(./like-counter/place-card__like-counter.css);
+@import url(./__delete-icon/_active/place-card__delete-icon_active.css);
 
 .place-card {
   width: 282px;

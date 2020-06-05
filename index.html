@@ -43,7 +43,7 @@
       <div class="popup__content">
         <img src="./images/close.svg" alt="" class="popup__close">
         <h3 class="popup__title">Новое место</h3>
-        <form class="popup__form" name="new" novalidate>
+        <form id="add-form" class="popup__form" name="new" novalidate>
             <input id = "mesto_name" type="text" name="name" class="popup__input popup__input_type_name" placeholder="Название" required minlength="2" maxlength="30">
             <span id = "mesto_name-error" class="error-message error-message_place_top"></span>
             <input id = "mesto_url" type="url" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на картинку" required>
@@ -57,7 +57,7 @@
       <div class="popup__content">
         <img src="./images/close.svg" alt="" class="popup__close">
         <h3 class="popup__title">Редактировать профиль</h3>
-        <form class="popup__form" name="edit" novalidate>
+        <form id="edit-form" class="popup__form" name="edit" novalidate>
             <input type="text" name="name" class="popup__input" id="username" placeholder="Имя" required minlength="2" maxlength="30">
             <span class="error-message error-message_place_top" id="username-error"></span>
             <input type="text" name="about" class="popup__input" id="aboutuser"placeholder="О себе" required minlength="2" maxlength="30">
@@ -71,7 +71,7 @@
       <div class="popup__content">
         <img src="./images/close.svg" alt="" class="popup__close">
         <h3 class="popup__title">Обновить аватар</h3>
-        <form class="popup__form" name="edit" novalidate>
+        <form id="avatar-form" class="popup__form" name="edit" novalidate>
           <input id = "avatar_url" type="url" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на аватар" required>
           <span id = "avatar_url-error" class="error-message"></span>
           <button type class="button popup__button popup__button_place_edit">Сохранить</button>
