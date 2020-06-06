@@ -5,20 +5,22 @@ class UserInfo {
     this.userAvatar = userAvatar;
   }
 
-  setUserInfo(form) {
-    const { name, about } = form.elements;
-    name.value = this.userName.textContent;
-    about.value = this.aboutUser.textContent;
+  setUserInfo(data) {
+    this.userData = data;
   }
 
-  updateUserInfo(name, about, linkAvatar) {
-    this.userName.textContent = name;
-    this.aboutUser.textContent = about;
-    this.userAvatar.style.backgroundImage = `url(${linkAvatar})`;
+  updateUserInfo() {
+    this.userName.textContent = this.userData.name;
+    this.aboutUser.textContent = this.userData.about;
+    this.userAvatar.style.backgroundImage = `url(${this.userData.avatar})`;
+  }
+
+  getUserInfo() {
+    return this.userData;
   }
 }
 
-// Надо исправить
+// Надо исправить +
 // Тут следует изменить концепцию
 // Создаем экземпляр класса, который на вход получит элементы страницы (как сейчас и сделано)
 // Форму выкидываем напрочь, это вообще не зона отсветственности класса (даже если в название прошлого спринта посмотреть)
