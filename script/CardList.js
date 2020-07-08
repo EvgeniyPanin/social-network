@@ -1,25 +1,24 @@
 'use strict';
 
 class CardList {
-    constructor(container, buildObjFunction, contantDemonstrate) {
-        this.container = container;
-        this.buildFunction = buildObjFunction;
-        this.contantDemonstrate = contantDemonstrate;
-    }
+  constructor(container) {
+    this.container = container;
+  }
 
-    addCard(cardElement) {
-        this.container.appendChild(cardElement);
-    }
+  addCard(cardElement) {
+    this.container.appendChild(cardElement);
+  }
 
-    render(dataArray, api, userID) {
-        dataArray.forEach((elem) => {
-            const card = this.buildFunction({
-                                                'elem': elem, 
-                                                'renderContantPopup': this.contantDemonstrate,
-                                                'requestCreater': api,
-                                                'userID': userID,
-                                            });
-        this.addCard(card);
-        })
-    }
+  render(itemsArray) {
+    itemsArray.forEach((item) => {
+      // Надо исправить +
+      // Мне еще с первого раза не понравилась эта штука с buildFunction
+      // Посмотрите на addCard -- он когда одну карту принимает -- он получает готовый элемент
+      // и вы ему этот элемент в точке сборки собирате, а для render -- почему-то делаете исключение
+      // Почему бы не собрать массив элементов вне класса CardList а сюда его просто передать?
+      // Зачем посвящать контейнер элементов в тонкости реализации того, что ему и знать не положено?
+      // Уберите лишний функционал из класса
+      this.addCard(item);
+    })
+  }
 }

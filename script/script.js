@@ -9,6 +9,12 @@ const apiConfig = {
   pathAvatar: 'users/me/avatar',
   pathLike: 'cards/like',
 };
+const errorMessages = {
+  textErrorLength: 'Должно быть от 2 до 30 символов',
+  textErrorEmptyString: 'Это обязательное поле',
+  textErrorURL: 'Здесь должна быть ссылка',
+};
+const cardTemplate = document.querySelector('#card-template').content.querySelector('.place-card');
 
 const buttonLoadHeader = 'Загрузка...'
 const container = document.querySelector('.places-list');
@@ -22,9 +28,10 @@ const userAvatar = document.querySelector('.user-info__photo');
 const createCardObj = (obj) => new Card(obj).create();
 
 const api = new Api(apiConfig);
-const editFormManager = new FormValidator(document.querySelector('#edit-form'));
-const addPlaceFormManager = new FormValidator(document.querySelector('#add-form'));
-const editAvatarFormManager = new FormValidator(document.querySelector('#avatar-form'));
+
+const editFormManager = new FormValidator(document.querySelector('#edit-form'), errorMessages);
+const addPlaceFormManager = new FormValidator(document.querySelector('#add-form'), errorMessages);
+const editAvatarFormManager = new FormValidator(document.querySelector('#avatar-form'), errorMessages);
 
 // получаем очищающие формы функции которые вернут установщики слушателей
 const cleanEditForm = editFormManager.setEventListeners();
@@ -36,7 +43,7 @@ const popupAddPlace = new PopupHasForm(document.querySelector('#new-popup'), cle
 const popupUserAvatar = new PopupHasForm(document.querySelector('#edit-image-popup'), cleanAvatarForm, buttonLoadHeader);
 const popupImage = new Popup(document.querySelector('#image-popup'));
 const userObj = new UserInfo(userName, aboutUser, userAvatar);
-const cardsContainer = new CardList(container, createCardObj, popupImage);
+const cardsContainer = new CardList(container);
 
 api.getUserInfo()
   .then((res) => {
@@ -44,13 +51,24 @@ api.getUserInfo()
     userObj.updateUserInfo();
     userObj.userID = res._id;
   })
-  .catch((err) => api.showAlert(err));
+  .catch((err) => api.showAlert(err.message));
 
 api.getCards()
   .then((res) => {
-    cardsContainer.render(res, api, userObj.userID);
+    const itemsArr = [];
+    res.forEach(elem => {
+      const card = createCardObj({
+        'elem': elem,
+        'renderContantPopup': popupImage,
+        'requestCreater': api,
+        'userID': userObj.userID,
+        'cardTemplate': cardTemplate,
+      });
+      itemsArr.push(card);
+    })
+    cardsContainer.render(itemsArr);
   })
-  .catch((err) => api.showAlert(err));
+  .catch((err) => api.showAlert(err.message));
 
 editButton.addEventListener('click', (evt) => {
   popupEditProfile.open();
@@ -81,14 +99,14 @@ popupEditProfile.form.addEventListener('submit', (evt) => {
 
   const { name, about } = popupEditProfile.form.elements;
 
-  api.updateUserInfo({name: name.value, about: about.value})
+  api.updateUserInfo({ name: name.value, about: about.value })
     .then((res) => {
       userObj.setUserInfo(res);
       userObj.updateUserInfo();
       popupEditProfile.close();
       popupEditProfile.setButtonHeader(popupEditProfile.buttonHeaderDefault);
     })
-    .catch((err) => api.showAlert(err));
+    .catch((err) => api.showAlert(err.message));
 
   popupEditProfile.setButtonHeader(popupEditProfile.buttonLoadHeader);
 })
@@ -96,24 +114,22 @@ popupAddPlace.form.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const { name, link } = popupAddPlace.form.elements;
-  
-  api.postNewCard({link: link.value, name: name.value,})
+
+  api.postNewCard({ link: link.value, name: name.value, })
     .then((elem) => {
-      // Надо исправить +
-      // Пользователь в принцие не должен про эту функцию у класса знать, а на как параметр прилетела
-      // туда. Но увас есть метод createCardObj -- им воспользуйтесь
       const card = createCardObj({
         'elem': elem,
         'renderContantPopup': popupImage,
         'requestCreater': api,
-        'userID': userObj.userID
+        'userID': userObj.userID,
+        'cardTemplate': cardTemplate,
       });
       cardsContainer.addCard(card);
       popupAddPlace.close();
       popupAddPlace.formButton.style.fontSize = '36px';
       popupAddPlace.setButtonHeader(popupAddPlace.buttonHeaderDefault);
     })
-    .catch((err) => api.showAlert(err));
+    .catch((err) => api.showAlert(err.message));
 
   popupAddPlace.formButton.style.fontSize = '18px';
   popupAddPlace.setButtonHeader(popupAddPlace.buttonLoadHeader);
@@ -123,20 +139,18 @@ popupUserAvatar.form.addEventListener('submit', (evt) => {
 
   const { link, } = popupUserAvatar.form.elements;
 
-  api.updateUserAvatar({avatar: link.value})
+  api.updateUserAvatar({ avatar: link.value })
     .then((res) => {
       userObj.setUserInfo(res);
       userObj.updateUserInfo();
       popupUserAvatar.close();
       popupUserAvatar.setButtonHeader(popupUserAvatar.buttonHeaderDefault);
     })
-    .catch((err) => api.showAlert(err));
+    .catch((err) => api.showAlert(err.message));
 
   popupUserAvatar.setButtonHeader(popupUserAvatar.buttonLoadHeader);
 })
 
 
 // Добрый день
-// Код у вас неплохой, но Api требует значительной доработки
-// Исправьте критические замечания и присылайте.
-// Также обратите внимание на комментарии в прочих классах
+// Остались замечания, которые к Api отношения имеют мало, но их следует устранить

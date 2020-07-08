@@ -1,10 +1,9 @@
 'use strict';
 
 class Card {
-  static _cardTemplate = document.querySelector('#card-template').content.querySelector('.place-card');
-
   constructor(obj) {
     this.isLike = null;
+    this.template = obj.cardTemplate;
     this.elem = obj.elem;
     this.name = obj.elem.name;
     this.link = obj.elem.link;
@@ -17,19 +16,13 @@ class Card {
 
   like = (evt) => {
     this.isLike = !this.isLike;
-    // Не должен метод карточки разбираться что там за метод потправки на сервер +
-    // Он должел логически флаг туда скинуть, а метод Aoi уж сам пусть разбирается put-get
-    // Аналогично и для прочих методов
-    
-    // Изменение визуального состояния элемента должно происходить внутри then успешного ответа сервера
-    // Надо исправить +
     this.api.toggleLike(this.isLike, this._id)
       .then((res) => {
         this.likesArr = res.likes;
         evt.target.classList.toggle('place-card__like-icon_liked');
         this.renderLikesCounter();
       })
-      .catch((err) => this.api.showAlert(err))
+      .catch((err) => this.api.showAlert(err.message))
   };
 
   remove = (evt) => {
@@ -38,11 +31,11 @@ class Card {
         this.removeEventListeners();
         this.card.remove();
       })
-      .catch((err) => this.api.showAlert(err))
+      .catch((err) => this.api.showAlert(err.message))
   };
 
   create() {
-    this.card = Card._cardTemplate.cloneNode(true);
+    this.card = this.template.cloneNode(true);
     const cardName = this.card.querySelector('.place-card__name');
     const cardImage = this.card.querySelector('.place-card__image');
 
@@ -55,8 +48,7 @@ class Card {
     this.deleteButton = this.card.querySelector('.place-card__delete-icon');
     this.cardImage = this.card.querySelector('.place-card__image');
     this.likesCounterElem = this.card.querySelector('.place-card__like-counter');
-
-    if (this.isMyCard()) this.deleteButton.style.display = 'block';
+    if (this.isMyCard()) this.deleteButton.classList.add('place-card__delete-icon_active');
     if (this.hasMyLike()) this.likeIkon.classList.add('place-card__like-icon_liked');
 
     this.setEventListeners();
