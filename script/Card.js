@@ -1,8 +1,6 @@
 'use strict';
 
 class Card {
-  // Можно лучше/Надо исправить +
-  // Лучше шаблон передавать в класс, а не "зашивать" во внутрь
   constructor(obj) {
     this.isLike = null;
     this.template = obj.cardTemplate;
@@ -50,7 +48,6 @@ class Card {
     this.deleteButton = this.card.querySelector('.place-card__delete-icon');
     this.cardImage = this.card.querySelector('.place-card__image');
     this.likesCounterElem = this.card.querySelector('.place-card__like-counter');
-    // Старайтесь использовать классы стилей -- их легче менять +
     if (this.isMyCard()) this.deleteButton.classList.add('place-card__delete-icon_active');
     if (this.hasMyLike()) this.likeIkon.classList.add('place-card__like-icon_liked');
 
