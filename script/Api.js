@@ -1,4 +1,4 @@
-class Api {
+export class Api {
   constructor(config) {
     this.cohort = config.cohort;
     this.token = config.token;

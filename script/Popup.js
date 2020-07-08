@@ -1,6 +1,6 @@
 'use strict';
 
-class Popup {
+export class Popup {
   constructor(popup) {
     this.popup = popup;
     this.setEventListenerClose();

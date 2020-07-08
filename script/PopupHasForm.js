@@ -1,6 +1,6 @@
-'use strict';
+import {Popup} from "./Popup";
 
-class PopupHasForm extends Popup {
+export class PopupHasForm extends Popup {
     constructor(popup, cleanForm, buttonLoadHeader) {
         super(popup);
         this.form = popup.querySelector('.popup__form');

@@ -1,4 +1,12 @@
 "use strict";
+import "../pages/index.css";
+import {Api} from "../script/Api";
+import {Card} from "../script/Card";
+import {CardList} from "../script/CardList";
+import {FormValidator} from "../script/FormValidator";
+import {Popup} from "../script/Popup";
+import {PopupHasForm} from "../script/PopupHasForm";
+import {UserInfo} from "../script/UserInfo";
 
 const apiConfig = {
   cohort: 'cohort11',
@@ -151,6 +159,3 @@ popupUserAvatar.form.addEventListener('submit', (evt) => {
   popupUserAvatar.setButtonHeader(popupUserAvatar.buttonLoadHeader);
 })
 
-
-// Добрый день
-// Остались замечания, которые к Api отношения имеют мало, но их следует устранить
