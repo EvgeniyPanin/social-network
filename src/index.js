@@ -1,12 +1,12 @@
 "use strict";
-import "../pages/index.css";
-import {Api} from "../script/Api";
-import {Card} from "../script/Card";
-import {CardList} from "../script/CardList";
-import {FormValidator} from "../script/FormValidator";
-import {Popup} from "../script/Popup";
-import {PopupHasForm} from "../script/PopupHasForm";
-import {UserInfo} from "../script/UserInfo";
+import "./pages/index.css";
+import {Api} from "./script/Api";
+import {Card} from "./script/Card";
+import {CardList} from "./script/CardList";
+import {FormValidator} from "./script/FormValidator";
+import {Popup} from "./script/Popup";
+import {PopupHasForm} from "./script/PopupHasForm";
+import {UserInfo} from "./script/UserInfo";
 
 const url = process.env.NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
 const apiConfig = {

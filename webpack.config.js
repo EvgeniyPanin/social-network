@@ -1,4 +1,4 @@
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -15,7 +15,7 @@ module.exports = {
     module: {
         rules: [{
                     test: /\.js$/,
-                    use: { loader: "babel-loader" },
+                    use: { loader: 'babel-loader' },
                     exclude: /node_modules/
                 },
                 {

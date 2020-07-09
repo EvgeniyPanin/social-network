@@ -2,7 +2,7 @@
   "name": "social-network",
   "homepage": "https://github.com/EvgeniyPanin/social-network",
   "version": "1.0.3",
-  "description": "",
+  "description": "A social network made in native Java Script",
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production rimraf dist && webpack --mode production",

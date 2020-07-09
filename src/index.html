@@ -10,7 +10,7 @@
 <body>
   <div class="root">
     <header class="header root__section">
-      <img src="<%=require('../images/logo.svg').default%>" alt="mesto logo" class="logo">
+      <img src="<%=require('./images/logo.svg').default%>" alt="mesto logo" class="logo">
     </header>
     <div class="profile root__section">
       <div class="user-info">
@@ -41,7 +41,7 @@
     </div>
     <div class="popup" id="new-popup">
       <div class="popup__content">
-        <img src="<%=require('../images/close.svg').default%>" alt="" class="popup__close">
+        <img src="<%=require('./images/close.svg').default%>" alt="" class="popup__close">
         <h3 class="popup__title">Новое место</h3>
         <form id="add-form" class="popup__form" name="new" novalidate>
             <input id = "mesto_name" type="text" name="name" class="popup__input popup__input_type_name" placeholder="Название" required minlength="2" maxlength="30">
@@ -55,7 +55,7 @@
 
     <div class="popup" id="edit-popup">
       <div class="popup__content">
-        <img src="<%=require('../images/close.svg').default%>" alt="" class="popup__close">
+        <img src="<%=require('./images/close.svg').default%>" alt="" class="popup__close">
         <h3 class="popup__title">Редактировать профиль</h3>
         <form id="edit-form" class="popup__form" name="edit" novalidate>
             <input type="text" name="name" class="popup__input" id="username" placeholder="Имя" required minlength="2" maxlength="30">
@@ -69,7 +69,7 @@
 
     <div class="popup" id="edit-image-popup">
       <div class="popup__content">
-        <img src="<%=require('../images/close.svg').default%>" alt="" class="popup__close">
+        <img src="<%=require('./images/close.svg').default%>" alt="" class="popup__close">
         <h3 class="popup__title">Обновить аватар</h3>
         <form id="avatar-form" class="popup__form" name="edit" novalidate>
           <input id = "avatar_url" type="url" name="link" class="popup__input popup__input_type_link-url" placeholder="Ссылка на аватар" required>
@@ -81,7 +81,7 @@
 
     <div class="popup" id="image-popup">
       <div class="popup__content popup__content_from_image">
-        <img src="<%=require('../images/close.svg').default%>" alt="" class="popup__close popup__close_place_image-popup">
+        <img src="<%=require('./images/close.svg').default%>" alt="" class="popup__close popup__close_place_image-popup">
         <img src="" alt="" class="popup__image">
       </div>
     </div>
