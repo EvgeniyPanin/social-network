@@ -7,8 +7,8 @@ import {FormValidator} from "./script/FormValidator";
 import {Popup} from "./script/Popup";
 import {PopupHasForm} from "./script/PopupHasForm";
 import {UserInfo} from "./script/UserInfo";
-
-const url = process.env.NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
+console.log(NODE_ENV)
+const url = NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
 const apiConfig = {
   cohort: 'cohort11',
   token: '51432599-1180-4874-9f6d-b347abfbe18a',

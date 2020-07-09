@@ -1,7 +1,7 @@
 {
   "name": "social-network",
   "homepage": "https://github.com/EvgeniyPanin/social-network",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A social network made in native Java Script",
   "main": "index.js",
   "scripts": {
