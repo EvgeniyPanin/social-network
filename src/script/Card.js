@@ -1,6 +1,6 @@
 'use strict';
 
-class Card {
+export class Card {
   constructor(obj) {
     this.isLike = null;
     this.template = obj.cardTemplate;

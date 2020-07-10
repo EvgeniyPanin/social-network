@@ -1,6 +1,4 @@
-class FormValidator {
-  // Надо исправить +
-  // Объект с текстом ошибок надо передавать в конструктор
+export class FormValidator {
   constructor(form, errors) {
     this.form = form;
     this.inputs = [...form.querySelectorAll('input')];

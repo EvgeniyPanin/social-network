@@ -1,9 +1,18 @@
 "use strict";
-
+import "./pages/index.css";
+import {Api} from "./script/Api";
+import {Card} from "./script/Card";
+import {CardList} from "./script/CardList";
+import {FormValidator} from "./script/FormValidator";
+import {Popup} from "./script/Popup";
+import {PopupHasForm} from "./script/PopupHasForm";
+import {UserInfo} from "./script/UserInfo";
+console.log(NODE_ENV);
+const url = NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
 const apiConfig = {
   cohort: 'cohort11',
   token: '51432599-1180-4874-9f6d-b347abfbe18a',
-  apiURL: 'https://praktikum.tk',
+  apiURL: url,
   pathUser: 'users/me',
   pathCards: 'cards',
   pathAvatar: 'users/me/avatar',
@@ -151,6 +160,3 @@ popupUserAvatar.form.addEventListener('submit', (evt) => {
   popupUserAvatar.setButtonHeader(popupUserAvatar.buttonLoadHeader);
 })
 
-
-// Добрый день
-// Остались замечания, которые к Api отношения имеют мало, но их следует устранить
