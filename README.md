@@ -1,7 +1,5 @@
 # [Социальная сеть "Место"](https://evgeniypanin.github.io/sprint_10/)
 
----  
-
 Версия 1.0.4
 
 ---  
