@@ -23,7 +23,7 @@
 
 ---
 
-Стек проекта: HTML, CSS, JavaScript, Webpack, Git, БЭМ
+Стек проекта: HTML, CSS, JavaScript, Webpack, Git, БЭМ, ООП
 
 ---
 Просмотреть проект можно кликнув на заголовок.  
