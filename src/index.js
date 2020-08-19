@@ -8,7 +8,7 @@ import {Popup} from "./script/Popup";
 import {PopupHasForm} from "./script/PopupHasForm";
 import {UserInfo} from "./script/UserInfo";
 
-const url = NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
+const url = NODE_ENV === 'development' ? 'https://nomoreparties.co' : 'https://nomoreparties.co';
 const apiConfig = {
   cohort: 'cohort11',
   token: '51432599-1180-4874-9f6d-b347abfbe18a',
